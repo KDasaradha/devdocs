@@ -5,7 +5,7 @@ import type { SiteConfig, NavItemConfig } from '@/types';
 
 const configPath = path.join(process.cwd(), 'public', 'config.yml');
 
-let-config-cache: SiteConfig | null = null;
+let configCache: SiteConfig | null = null;
 
 // Helper function to normalize nav paths
 const normalizeNavPaths = (navItems: NavItemConfig[], basePath: string = ''): NavItemConfig[] => {
@@ -56,3 +56,4 @@ export function loadConfig(): SiteConfig {
     };
   }
 }
+
