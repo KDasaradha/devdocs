@@ -83,9 +83,20 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      // Typography plugin removed for Turbopack stability
+      // typography: (theme: any) => ({
+      //   DEFAULT: {
+      //     css: {
+            // ... typography styles
+      //     },
+      //   },
+      // }),
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    // require("@tailwindcss/typography") // Temporarily removed
+  ],
 } satisfies Config;
 
 export default config;

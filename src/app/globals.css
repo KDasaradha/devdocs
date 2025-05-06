@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -73,57 +72,11 @@
   }
 
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
-*/
-
-/* Styles for react-markdown generated elements */
-/*
-.markdown-content h1 {
-  @apply text-4xl font-bold mt-8 mb-6 pb-2 border-b;
-}
-.markdown-content h2 {
-  @apply text-3xl font-semibold mt-6 mb-4 pb-2 border-b;
-}
-.markdown-content h3 {
-  @apply text-2xl font-semibold mt-4 mb-3;
-}
-.markdown-content h4 {
-  @apply text-xl font-semibold mt-3 mb-2;
-}
-.markdown-content p {
-  @apply mb-4 leading-relaxed;
-}
-.markdown-content ul {
-  @apply list-disc pl-6 mb-4 space-y-1;
-}
-.markdown-content ol {
-  @apply list-decimal pl-6 mb-4 space-y-1;
-}
-.markdown-content a {
-  @apply text-accent hover:underline;
-}
-.markdown-content blockquote {
-  @apply border-l-4 border-accent pl-4 italic my-4 text-muted-foreground;
-}
-.markdown-content hr {
-  @apply my-8 border-border;
-}
-.markdown-content table {
-  @apply w-full my-4 border-collapse border border-border;
-}
-.markdown-content th, .markdown-content td {
-  @apply border border-border px-4 py-2 text-left;
-}
-.markdown-content th {
-  @apply bg-muted;
-}
-.markdown-content img {
-  @apply rounded-md my-4 max-w-full h-auto shadow-md;
-}
-*/

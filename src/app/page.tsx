@@ -2,7 +2,6 @@ import { Layout } from '@/components/layout/layout';
 import { loadConfig } from '@/lib/config';
 import { getMarkdownContentBySlug, getAllMarkdownDocumentsForSearch } from '@/lib/markdown';
 import type { SiteConfig, MarkdownDocument, SearchDoc } from '@/types';
-import { Toaster } from '@/components/ui/toaster'; // Ensure Toaster is available
 
 export const dynamic = 'force-static'; // Ensure SSG for the homepage
 
@@ -25,9 +24,6 @@ export default async function HomePage() {
   }
   
   return (
-    <>
-      <Layout config={config} document={document} searchDocs={searchDocs} />
-      <Toaster />
-    </>
+    <Layout config={config} document={document} searchDocs={searchDocs} />
   );
 }

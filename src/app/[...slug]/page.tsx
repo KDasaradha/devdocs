@@ -4,7 +4,6 @@ import { getMarkdownContentBySlug, getAllMarkdownSlugs, getAllMarkdownDocumentsF
 import type { SiteConfig, MarkdownDocument, SearchDoc } from '@/types';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Toaster } from '@/components/ui/toaster'; // Ensure Toaster is available
 
 interface DocPageProps {
   params: {
@@ -47,9 +46,6 @@ export default async function DocPage({ params }: DocPageProps) {
   }
   
   return (
-    <>
-      <Layout config={config} document={document} searchDocs={searchDocs} />
-      <Toaster />
-    </>
+    <Layout config={config} document={document} searchDocs={searchDocs} />
   );
 }

@@ -23,7 +23,7 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
           <div className="flex flex-row">
             <Sidebar navItems={nav} />
             <main className="flex-1 md:pl-72 lg:pl-80 py-8 w-full overflow-x-hidden"> {/* Adjust pl based on sidebar width */}
-              <div className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl dark:prose-invert max-w-none w-full">
+              <div className="max-w-none w-full"> {/* Removed prose classes */}
                 {document ? (
                   <>
                     <PageTitle title={document.title} />
@@ -49,3 +49,4 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
     </SearchProvider>
   );
 }
+
