@@ -1,7 +1,8 @@
+
 import { SiteLogo } from './site-logo';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { SearchBar } from '@/components/search/search-bar';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { NavMenu } from '@/components/navigation/nav-menu';
@@ -33,12 +34,15 @@ export function Header({ siteName, navItems }: HeaderProps) {
                   <span className="sr-only">Toggle Menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-72 p-4">
-                <div className="mb-4">
-                   <SiteLogo siteName={siteName} />
-                </div>
-                <SearchBar />
-                <div className="mt-4">
+              <SheetContent side="left" className="w-72 p-0 pt-6 flex flex-col">
+                <SheetHeader className="px-4 pb-4 border-b">
+                  <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
+                  <SiteLogo siteName={siteName} />
+                  <div className="mt-4">
+                    <SearchBar />
+                  </div>
+                </SheetHeader>
+                <div className="flex-1 overflow-y-auto p-4">
                   <NavMenu navItems={navItems} />
                 </div>
               </SheetContent>
