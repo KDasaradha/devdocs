@@ -10,6 +10,8 @@ nav:
         path: guides/getting-started
       - title: Advanced Topics
         path: guides/advanced-topics
+      - title: Comprehensive FastAPI Guide
+        path: guides/comprehensive-fastapi-guide
   - title: Python
     children:
       - title: Basic
@@ -149,3 +151,4 @@ theme:
     - dark
 search:
   enabled: true
+
