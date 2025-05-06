@@ -95,7 +95,7 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"),
-    // require("@tailwindcss/typography") // Temporarily removed
+    // require("@tailwindcss/typography") // Ensure this remains commented out
   ],
 } satisfies Config;
 
