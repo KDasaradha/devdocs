@@ -1,0 +1,19 @@
+site_name: DevDocs++
+nav:
+  - title: Home
+    path: index
+  - title: About
+    path: about
+  - title: Guides
+    children:
+      - title: Getting Started
+        path: guides/getting-started
+      - title: Advanced Topics
+        path: guides/advanced-topics
+theme:
+  default: system # can be light, dark, or system
+  options:
+    - light
+    - dark
+search:
+  enabled: true

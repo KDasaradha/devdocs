@@ -18,6 +18,22 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // If you decide to use MDX later, you'll configure it here.
+  // For example:
+  // pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
+  // experimental: {
+  //   mdxRs: true,
+  // },
 };
+
+// If using MDX:
+// const withMDX = require('@next/mdx')({
+//   extension: /\.mdx?$/,
+//   options: {
+//     remarkPlugins: [],
+//     rehypePlugins: [],
+//   },
+// });
+// module.exports = withMDX(nextConfig);
 
 export default nextConfig;
