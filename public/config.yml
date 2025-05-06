@@ -10,6 +10,138 @@ nav:
         path: guides/getting-started
       - title: Advanced Topics
         path: guides/advanced-topics
+  - title: Python
+    children:
+      - title: Basic
+        path: python/basic
+      - title: Intermediate
+        path: python/intermediate
+      - title: Advanced
+        path: python/advanced
+      - title: Pro
+        path: python/pro
+      - title: Hidden Gems
+        path: python/hidden-gems
+  - title: FastAPI
+    children:
+      - title: Basic
+        path: fastapi/basic
+      - title: Intermediate
+        path: fastapi/intermediate
+      - title: Advanced
+        path: fastapi/advanced
+      - title: Pro
+        path: fastapi/pro
+      - title: Hidden Gems
+        path: fastapi/hidden-gems
+  - title: SQLAlchemy
+    children:
+      - title: Basic
+        path: sqlalchemy/basic
+      - title: Intermediate
+        path: sqlalchemy/intermediate
+      - title: Advanced
+        path: sqlalchemy/advanced
+      - title: Pro
+        path: sqlalchemy/pro
+      - title: Hidden Gems
+        path: sqlalchemy/hidden-gems
+  - title: Pydantic
+    children:
+      - title: Basic
+        path: pydantic/basic
+      - title: Intermediate
+        path: pydantic/intermediate
+      - title: Advanced
+        path: pydantic/advanced
+      - title: Pro
+        path: pydantic/pro
+      - title: Hidden Gems
+        path: pydantic/hidden-gems
+  - title: PostgreSQL
+    children:
+      - title: Basic
+        path: postgresql/basic
+      - title: Intermediate
+        path: postgresql/intermediate
+      - title: Advanced
+        path: postgresql/advanced
+      - title: Pro
+        path: postgresql/pro
+      - title: Hidden Gems
+        path: postgresql/hidden-gems
+  - title: MongoDB
+    children:
+      - title: Basic
+        path: mongodb/basic
+      - title: Intermediate
+        path: mongodb/intermediate
+      - title: Advanced
+        path: mongodb/advanced
+      - title: Pro
+        path: mongodb/pro
+      - title: Hidden Gems
+        path: mongodb/hidden-gems
+  - title: JavaScript
+    children:
+      - title: Basic
+        path: javascript/basic
+      - title: Intermediate
+        path: javascript/intermediate
+      - title: Advanced
+        path: javascript/advanced
+      - title: Pro
+        path: javascript/pro
+      - title: Hidden Gems
+        path: javascript/hidden-gems
+  - title: React
+    children:
+      - title: Basic
+        path: react/basic
+      - title: Intermediate
+        path: react/intermediate
+      - title: Advanced
+        path: react/advanced
+      - title: Pro
+        path: react/pro
+      - title: Hidden Gems
+        path: react/hidden-gems
+  - title: Next.js
+    children:
+      - title: Basic
+        path: nextjs/basic
+      - title: Intermediate
+        path: nextjs/intermediate
+      - title: Advanced
+        path: nextjs/advanced
+      - title: Pro
+        path: nextjs/pro
+      - title: Hidden Gems
+        path: nextjs/hidden-gems
+  - title: HTML
+    children:
+      - title: Basic
+        path: html/basic
+      - title: Intermediate
+        path: html/intermediate
+      - title: Advanced
+        path: html/advanced
+      - title: Pro
+        path: html/pro
+      - title: Hidden Gems
+        path: html/hidden-gems
+  - title: CSS
+    children:
+      - title: Basic
+        path: css/basic
+      - title: Intermediate
+        path: css/intermediate
+      - title: Advanced
+        path: css/advanced
+      - title: Pro
+        path: css/pro
+      - title: Hidden Gems
+        path: css/hidden-gems
 theme:
   default: system # can be light, dark, or system
   options:
