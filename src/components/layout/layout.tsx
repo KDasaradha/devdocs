@@ -1,3 +1,4 @@
+
 import { Header } from './header';
 import { Sidebar } from './sidebar';
 import { PageTitle } from '@/components/content/page-title';
@@ -24,37 +25,54 @@ export function Layout({ config, document, children }: LayoutProps) {
 
   // Simplified Edit URL generation
   const getEditUrl = () => {
-    if (!repo_url || !edit_uri || !document || !document.frontmatter?.sourceFilePath) {
-      // console.warn("Cannot generate edit URL: Missing repo_url, edit_uri, or sourceFilePath in frontmatter for slug:", document?.slug);
-      return null; // Cannot determine edit URL without the source path
+    if (!repo_url || !edit_uri || !document?.frontmatter?.sourceFilePath) {
+       // Log a warning if any necessary part is missing
+       // console.warn("Cannot generate edit URL: Missing repo_url, edit_uri, or sourceFilePath.", { repo_url, edit_uri, frontmatter: document?.frontmatter });
+       return null;
     }
 
     const baseEditUri = edit_uri.endsWith('/') ? edit_uri : `${edit_uri}/`;
     const relativeFilePath = document.frontmatter.sourceFilePath.replace(/^\//, ''); // Ensure no leading slash
 
-    const cleanRepoUrl = repo_url.replace(/\/$/, ''); // Remove trailing slash from repo URL if present
-    const cleanBaseEditUri = baseEditUri.replace(/^\//, '').replace(/\/$/, ''); // Ensure no leading/trailing slashes
-
-    return `${cleanRepoUrl}/${cleanBaseEditUri}/${relativeFilePath}`;
+    // More robust URL joining
+    try {
+        const repoBase = new URL(repo_url);
+        // Construct the path part, ensuring no double slashes if baseEditUri is empty or '/'
+        const editPath = `${cleanPathSegment(baseEditUri)}${relativeFilePath}`;
+        // Use URL constructor for reliable joining, handling potential base path in repo_url
+        const editUrl = new URL(editPath, repoBase);
+        return editUrl.toString();
+    } catch (e) {
+        console.error("Error constructing edit URL:", e);
+        // Fallback to simple string concatenation if URL parsing fails
+        const cleanRepoUrl = repo_url.replace(/\/$/, '');
+        return `${cleanRepoUrl}/${baseEditUri}${relativeFilePath}`;
+    }
   };
+
+  // Helper to clean path segments for URL joining
+  const cleanPathSegment = (segment: string): string => {
+      return segment.replace(/^\/+|\/+$/g, ''); // Remove leading/trailing slashes
+  };
+
 
   const editUrl = getEditUrl();
 
   return (
-    // SearchProvider now fetches its own data
+    // SearchProvider now fetches its own data internally
     <SearchProvider>
       <div className="min-h-screen flex flex-col bg-background">
         <Header siteName={site_name} navItems={nav} />
         <div className="flex-1 container mx-auto px-4 md:px-8 max-w-screen-2xl">
           <div className="flex flex-col md:flex-row">
             <Sidebar navItems={nav} />
-            {/* Main content area: Adjusted left padding (md:pl-64) and max-width for prose */}
+            {/* Main content area: Adjusted left padding and added animation */}
             <main className={cn(
-              "flex-1 md:pl-64 py-8 w-full overflow-x-hidden", // Adjusted left padding for wider content area
-              "animate-fade-in" // Added animation class
+              "flex-1 md:pl-52 lg:pl-56 py-8 w-full overflow-x-hidden max-w-none", // Adjusted left padding for current sidebar width
+              "animate-fade-in" // Added fade-in animation class
              )}>
-              {/* Increased prose max-width: max-w-3xl -> max-w-4xl */}
-              <article className="prose dark:prose-invert max-w-4xl mx-auto w-full">
+              {/* Increased prose max-width for better readability on wider screens */}
+              <article className="prose dark:prose-invert max-w-4xl mx-auto w-full group">
                 {document ? (
                   <>
                     {/* Ensure title exists before rendering PageTitle */}
@@ -86,7 +104,7 @@ export function Layout({ config, document, children }: LayoutProps) {
                   </>
                 ) : (
                   // Render children if no document is provided (e.g., for custom pages not using this layout structure)
-                  children
+                  children ? children : <p className="text-center text-muted-foreground italic">(No document content available)</p>
                 )}
               </article>
             </main>

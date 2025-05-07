@@ -6,7 +6,7 @@ import { unified, type Processor } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
-import rehypeRaw from 'rehype-raw';
+import rehypeRaw from 'rehype-raw'; // To handle HTML in markdown safely
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePrismPlus from 'rehype-prism-plus';
@@ -33,8 +33,22 @@ const removeElementsForSearch = () => (tree: any) => {
       return [visit.SKIP, index];
     }
      if (node.type === 'code') {
-        parent.children.splice(index, 1);
-        return [visit.SKIP, index];
+        // Check if it's NOT inside a <pre> tag already handled above
+       let isInsidePre = false;
+       let currentParent = parent;
+       while(currentParent) {
+          if (currentParent.type === 'element' && currentParent.tagName === 'pre') {
+            isInsidePre = true;
+            break;
+          }
+          // Basic parent traversal, might need `unist-util-visit-parents` for robust check
+          // For this simple case, checking immediate parent might suffice
+          currentParent = (currentParent as any).parent; // This property might not exist depending on tree structure/plugins
+       }
+       if (!isInsidePre) {
+         parent.children.splice(index, 1);
+         return [visit.SKIP, index]; // Adjust index for next iteration
+       }
     }
   });
 };
@@ -53,10 +67,23 @@ function normalizeSlug(rawSlugSegments: string[] | undefined): string {
   // Remove potential trailing '.md' or '.mdx' if accidentally included
   slug = slug.replace(/\.mdx?$/, '');
 
-  // Ensure consistency: no leading/trailing slashes for non-root slugs
-  slug = slug.replace(/^\/+|\/+$/g, '');
+  // Convert directory index files ('folder/index') to directory slugs ('folder')
+  if (slug.endsWith('/index')) {
+    slug = slug.substring(0, slug.length - '/index'.length);
+  }
+  // Handle root index file explicitly ('index' or '/index' -> 'index')
+  else if (path.basename(slug) === 'index' && (path.dirname(slug) === '.' || path.dirname(slug) === '/')) {
+     slug = 'index';
+  }
 
-  return slug || 'index'; // Ensure we always return 'index' for the root
+  // Ensure consistency: no leading/trailing slashes for non-root slugs
+  // And handle the case where only 'index' remains after processing
+  slug = slug.replace(/^\/+|\/+$/g, '');
+  if (slug === '') {
+     slug = 'index';
+  }
+
+  return slug;
 }
 
 // Tries to find the actual file path for a given normalized slug.
@@ -85,6 +112,7 @@ function findMarkdownFile(normalizedSlug: string): string | null {
     try {
       // Check if path exists and is a file
       if (fs.existsSync(p) && fs.statSync(p).isFile()) {
+        // console.log(`---> findMarkdownFile: Found match for slug "${normalizedSlug}" at path: "${p}"`);
         return p;
       }
     } catch (e) {
@@ -96,7 +124,7 @@ function findMarkdownFile(normalizedSlug: string): string | null {
   }
 
   // If no file is found after checking all potentials
-  console.warn(`---> findMarkdownFile: No matching file found for slug "${normalizedSlug}" in checked paths: [${potentialPaths.join(', ')}]`);
+  // console.warn(`---> findMarkdownFile: No matching file found for slug "${normalizedSlug}" in checked paths: [${potentialPaths.join(', ')}]`);
   return null;
 }
 
@@ -104,23 +132,35 @@ function findMarkdownFile(normalizedSlug: string): string | null {
 // Create unified processor instances outside the function for efficiency
 // Processor for rendering HTML content
 const htmlProcessor = unified()
-  .use(remarkParse)
-  .use(remarkGfm)
-  .use(remarkRehype, { allowDangerousHtml: true })
-  .use(rehypeRaw)
-  .use(rehypeSlug)
-  .use(rehypeAutolinkHeadings, {
-    behavior: 'wrap',
-    properties: { className: ['anchor'], 'aria-hidden': 'true', tabIndex: -1 }
+  .use(remarkParse) // Parse markdown
+  .use(remarkGfm) // Support GitHub Flavored Markdown (tables, strikethrough, etc.)
+  .use(remarkRehype, { allowDangerousHtml: true }) // Convert markdown to rehype HAST
+  .use(rehypeRaw) // Handle raw HTML embedded in markdown
+  .use(rehypeSlug) // Add 'id' attributes to headings
+  .use(rehypeAutolinkHeadings, { // Add anchor links to headings
+    behavior: 'prepend', // Prepend the link inside the heading
+    properties: { className: ['anchor'], 'aria-hidden': 'true', tabIndex: -1 }, // Add classes and attributes to the link
+    content: { // Customize the appearance of the link (e.g., a hash symbol)
+        type: 'element',
+        tagName: 'span',
+        properties: { className: ['anchor-icon'] },
+        children: [{ type: 'text', value: '#' }]
+    }
   })
-  .use(rehypePrismPlus, { showLineNumbers: false, ignoreMissing: true })
-  .use(rehypeStringify) as Processor; // Assert type
+  .use(rehypePrismPlus, { showLineNumbers: false, ignoreMissing: true }) // Apply Prism syntax highlighting
+  .use(rehypeStringify); // Convert HAST to HTML string
+  // Removed invalid TS type assertion: as Processor<any, any, any, string>;
+
 
 // Processor for extracting text content for search indexing
 const searchProcessor = unified()
   .use(remarkParse)
   .use(remarkGfm)
-  .use(removeElementsForSearch) as Processor; // Assert type
+  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeRaw)
+  .use(removeElementsForSearch) // Custom plugin to remove code blocks etc.
+  .use(rehypeStringify);
+  // Removed invalid TS type assertion: as Processor<any, any, any, string>;
 
 
 // Gets the markdown content for a given slug array.
@@ -131,8 +171,11 @@ export async function getMarkdownContentBySlug(slugSegments: string[] | undefine
   const filePath = findMarkdownFile(normalizedSlug);
 
   if (!filePath) {
-    console.error(`---> getMarkdownContentBySlug: Markdown file NOT FOUND for slug "${normalizedSlug}". Checked in dir: ${docsDirectory}`);
-    return null;
+    // Log only if the request wasn't for 'index' - index failures are handled in page.tsx
+    if (normalizedSlug !== 'index') {
+        console.error(`---> getMarkdownContentBySlug: Markdown file NOT FOUND for requested slug "${normalizedSlug}".`);
+    }
+    return null; // Return null, let the page component handle the 404 logic
   }
 
   let fileContents: string;
@@ -141,15 +184,19 @@ export async function getMarkdownContentBySlug(slugSegments: string[] | undefine
     // console.log(`---> getMarkdownContentBySlug: Successfully READ file "${filePath}" for slug "${normalizedSlug}"`);
   } catch (readError) {
     console.error(`---> getMarkdownContentBySlug: Error READING file "${filePath}" (for slug "${normalizedSlug}"):`, readError);
-    return null;
+    return null; // Return null on file read error
   }
 
   let documentMatter;
   try {
+    // Check for BOM (Byte Order Mark) which can cause issues with gray-matter
+    if (fileContents.charCodeAt(0) === 0xFEFF) {
+      fileContents = fileContents.slice(1);
+    }
     documentMatter = matter(fileContents);
   } catch (parseError) {
     console.error(`---> getMarkdownContentBySlug: Error PARSING frontmatter in file "${filePath}" (for slug "${normalizedSlug}"):`, parseError);
-    // If frontmatter parsing fails, treat content as full markdown without data
+    // Treat content as full markdown without frontmatter if parsing fails
     documentMatter = { data: {}, content: fileContents, isEmpty: !fileContents, excerpt: '' };
   }
 
@@ -159,9 +206,8 @@ export async function getMarkdownContentBySlug(slugSegments: string[] | undefine
   // Check for empty markdown content *after* parsing frontmatter
   if (markdownContentForProcessing.trim() === '') {
       console.warn(`---> getMarkdownContentBySlug: Markdown content is empty in file "${filePath}" for slug "${normalizedSlug}".`);
-      // Return minimal document, page component should handle empty content display
+      // Proceed, but the contentHtml will be empty, allowing the page component to render fallback.
   }
-
 
   let processedContentHtml = '';
   try {
@@ -171,7 +217,7 @@ export async function getMarkdownContentBySlug(slugSegments: string[] | undefine
     processedContentHtml = fileResultHtml.toString();
   } catch (htmlProcessingError) {
     console.error(`---> getMarkdownContentBySlug: Error PROCESSING markdown to HTML in file "${filePath}" (for slug "${normalizedSlug}"):`, htmlProcessingError);
-    processedContentHtml = `<p class="text-destructive">Error processing markdown content: ${(htmlProcessingError as Error).message}</p>`;
+    processedContentHtml = `<p class="text-destructive">Error processing markdown content.</p>`; // Provide a safe error message
   }
 
   // Determine title: Use frontmatter title, fallback to making title from slug
@@ -179,6 +225,7 @@ export async function getMarkdownContentBySlug(slugSegments: string[] | undefine
   if (typeof frontmatter.title === 'string' && frontmatter.title.trim() !== '') {
       title = frontmatter.title;
   } else {
+      // Generate title from the *normalized* slug
       const titleSlug = normalizedSlug === 'index' ? 'Home' : normalizedSlug.split('/').pop() || 'Page';
       title = titleSlug
           .split(/[-_]/) // Split by hyphen or underscore
@@ -218,7 +265,7 @@ export function getAllMarkdownSlugs(directory: string = docsDirectory): string[]
     let entries;
     try {
       if (!fs.existsSync(dir)) {
-        console.warn(`getAllMarkdownSlugs: Directory not found: ${dir}`);
+        console.warn(`getAllMarkdownSlugs: Directory not found, skipping: ${dir}`);
         return; // Stop recursion if directory doesn't exist
       }
       entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -238,15 +285,12 @@ export function getAllMarkdownSlugs(directory: string = docsDirectory): string[]
         // Normalize 'folder/index' to 'folder'
         if (slug.endsWith('/index')) {
           slug = slug.substring(0, slug.length - '/index'.length);
+          if (slug === '') slug = 'index'; // Handle case where it was 'index.md' at root
         }
-        // Handle root index file ('index' or '/index' after removing .md)
-        else if (path.basename(slug) === 'index' && (path.dirname(slug) === '.' || path.dirname(slug) === '/')) {
-           slug = 'index';
-        }
-        // Ensure root path ('/' or '') becomes 'index'
-        slug = (slug === '' || slug === '/') ? 'index' : slug.replace(/^\//, ''); // Also remove leading slash for non-root slugs
+        // Ensure root path ('/' or '') becomes 'index' after potential /index removal
+        slug = (slug === '' || slug === '/') ? 'index' : slug.replace(/^\//, '');
 
-        // Skip empty slugs if they somehow occur
+        // Skip empty slugs if they somehow occur (e.g. root '/index.md' becoming '')
         if (slug) {
            slugs.add(slug);
         }
@@ -255,7 +299,9 @@ export function getAllMarkdownSlugs(directory: string = docsDirectory): string[]
   }
 
   findFilesRecursively(directory, '');
-  return Array.from(slugs);
+  const resultSlugs = Array.from(slugs);
+  // console.log(`getAllMarkdownSlugs: Found slugs: ${resultSlugs.join(', ')}`);
+  return resultSlugs;
 }
 
 
@@ -270,7 +316,7 @@ export async function getAllMarkdownDocumentsForSearch(): Promise<SearchDoc[]> {
     const doc = await getMarkdownContentBySlug(slugSegments);
 
     if (!doc || typeof doc.rawContent !== 'string') {
-        // console.warn(`Search Indexing: Skipping doc with null/invalid rawContent for slug: ${slug}`);
+        console.warn(`Search Indexing: Skipping doc with null/invalid rawContent for slug: ${slug}`);
         return null;
     }
 
@@ -313,5 +359,4 @@ export async function getAllMarkdownDocumentsForSearch(): Promise<SearchDoc[]> {
   // console.log(`getAllMarkdownDocumentsForSearch: Returning ${validDocs.length} valid documents for search index.`);
   return validDocs;
 }
-
 

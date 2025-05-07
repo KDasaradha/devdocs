@@ -17,7 +17,18 @@ interface DocPageProps {
 export const dynamic = 'force-static';
 // export const revalidate = 3600; // Optional: Revalidate every hour if content might change without redeploy
 
-// Generate static params, ensuring correct format and filtering invalid slugs.
+// Helper function to convert the slug array from params into a single string path
+// This helps in logging and debugging which path was actually requested.
+function getSlugFromParams(params: { slug?: string[] }): string {
+  const slugArray = params.slug || [];
+  // Join array segments, handle empty array (root) case by returning 'index'
+  const joinedSlug = slugArray.length > 0 ? slugArray.join('/') : 'index';
+  // Ensure it doesn't return just an empty string if slug was []
+  return joinedSlug === '' ? 'index' : joinedSlug;
+}
+
+
+// Generate static params, but filter to ensure only valid pages are generated
 export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
   const allPossibleSlugs = getAllMarkdownSlugs();
   const validParams: { slug: string[] }[] = [];
@@ -26,15 +37,16 @@ export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
 
   for (const slug of allPossibleSlugs) {
     // Check content existence more reliably before adding to params
-    // Convert normalized slug string back to string array format required by Next.js params
     const slugArray = slug === 'index' ? [] : slug.split('/');
     try {
-        const doc = await getMarkdownContentBySlug(slugArray); // Use array directly
-        if (doc && typeof doc.contentHtml === 'string') { // Check if content was successfully processed
+        // Use a quick check, perhaps just frontmatter, or assume findMarkdownFile in getMarkdownContentBySlug is reliable
+        const doc = await getMarkdownContentBySlug(slugArray);
+        if (doc && doc.contentHtml) { // Check if document and its HTML content exist
             validParams.push({ slug: slugArray });
             // console.log(`   - Added valid param for slug "${slug}": { slug: [${slugArray.join(', ')}] }`);
         } else {
-           console.warn(`---> generateStaticParams: Skipping param generation (content check failed or processing error) for slug: "${slug}"`);
+           // Don't log excessively here, as it's expected some paths in config might not exist yet
+           // console.warn(`---> generateStaticParams: Skipping param generation (doc or contentHtml missing) for slug: "${slug}"`);
         }
     } catch (error) {
         console.error(`---> generateStaticParams: Error checking content for slug "${slug}":`, error);
@@ -43,9 +55,9 @@ export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
 
   if (validParams.length === 0 && allPossibleSlugs.length > 0) {
       console.error("----> generateStaticParams: CRITICAL - No valid slugs found with content. Check file paths, read permissions, and markdown processing logic in lib/markdown.ts.");
+   } else if (allPossibleSlugs.length === 0) {
+       console.warn("----> generateStaticParams: No slugs found by getAllMarkdownSlugs. Ensure 'content/docs' directory has markdown files.");
    }
-
-   // No need to explicitly add root param if getAllMarkdownSlugs correctly returns 'index' and getMarkdownContentBySlug handles it
 
   // console.log(`---> generateStaticParams: Returning ${validParams.length} valid param objects: ${JSON.stringify(validParams)}`);
   return validParams;
@@ -57,9 +69,10 @@ export async function generateMetadata({ params }: DocPageProps): Promise<Metada
   const doc = await getMarkdownContentBySlug(slugSegments); // Pass segments directly
   const config = loadConfig();
 
+  const requestedPath = getSlugFromParams(params); // Use helper for logging
+
   if (!doc) {
      // Log the specific slug that wasn't found
-     const requestedPath = slugSegments?.join('/') || 'index';
      console.error(`---> generateMetadata: Document not found for requested path "${requestedPath}". Returning default metadata.`);
      return {
         title: `Page Not Found | ${config.site_name || 'Docs'}`,
@@ -81,7 +94,7 @@ export async function generateMetadata({ params }: DocPageProps): Promise<Metada
         siteName: config.site_name,
         images: config.logo_path ? [
             {
-                url: config.logo_path.startsWith('http') ? config.logo_path : new URL(config.logo_path, config.site_url || 'http://localhost').toString(),
+                url: config.logo_path.startsWith('http') ? config.logo_path : new URL(config.logo_path, config.site_url || 'http://localhost:3000').toString(), // Use a default base URL
                 // Add width/height if known
             }
         ] : [],
@@ -92,7 +105,7 @@ export async function generateMetadata({ params }: DocPageProps): Promise<Metada
         card: 'summary_large_image',
         title: `${doc.title} | ${config.site_name || 'Docs'}`,
         description: doc.frontmatter?.description as string || config.site_description,
-        images: config.logo_path ? [config.logo_path.startsWith('http') ? config.logo_path : new URL(config.logo_path, config.site_url || 'http://localhost').toString()] : [],
+        images: config.logo_path ? [config.logo_path.startsWith('http') ? config.logo_path : new URL(config.logo_path, config.site_url || 'http://localhost:3000').toString()] : [],
      }
   };
 }
@@ -105,25 +118,22 @@ export default async function DocPage({ params }: DocPageProps) {
   // Fetch the document using the slug segments
   const document: MarkdownDocument | null = await getMarkdownContentBySlug(slugSegments);
 
+  const requestedPath = getSlugFromParams(params); // Use helper for logging
+
   if (!document) {
-    const requestedPath = slugSegments?.join('/') || 'index';
     console.error(`[ Server ] DocPage: Document not found for requested path "${requestedPath}". Triggering notFound().`);
     notFound(); // Trigger the standard 404 page
   }
 
   // Check if contentHtml exists and is not empty, otherwise trigger notFound
   if (!document.contentHtml || document.contentHtml.trim() === '') {
-      console.error(`[ Server ] DocPage: Document found for slug "${document.slug}", but contentHtml is missing or empty. Triggering notFound().`);
+      console.error(`[ Server ] DocPage: Document found for slug "${document.slug}" (requested path: "${requestedPath}"), but contentHtml is missing or empty. Triggering notFound().`);
       notFound();
   }
 
-  // console.log(`[ Server ] DocPage: Rendering document for slug "${document.slug}" with title "${document.title}"`);
+  // console.log(`[ Server ] DocPage: Rendering document for slug "${document.slug}" (requested path: "${requestedPath}") with title "${document.title}"`);
 
   return (
     <Layout config={config} document={document} />
   );
 }
-
-        ```
-      
-    
