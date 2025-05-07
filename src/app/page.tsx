@@ -4,17 +4,18 @@ import { loadConfig } from '@/lib/config';
 import { getMarkdownContentBySlug } from '@/lib/markdown';
 import type { SiteConfig, MarkdownDocument } from '@/types';
 import { notFound } from 'next/navigation';
+import path from 'path'; // Import path
 
 // Ensure the homepage is treated as static if its content doesn't change dynamically
 export const dynamic = 'force-static';
 
 export default async function HomePage() {
   const config: SiteConfig = loadConfig();
-  // Explicitly pass undefined to get the root 'index' page
-  const document: MarkdownDocument | null = await getMarkdownContentBySlug(undefined);
+  // Explicitly pass ['index'] to get the root 'index' page
+  const document: MarkdownDocument | null = await getMarkdownContentBySlug(['index']);
 
   if (!document) {
-    console.error("HomePage: Critical error - could not load content for the root page ('index.md' or 'index.mdx'). Please ensure the file exists in 'content/docs' and is readable/parsable.");
+    console.error("HomePage: Critical error - could not load content for 'index.md'. Please ensure 'content/docs/index.md' exists and is readable.");
     notFound(); // Trigger 404 if index content cannot be loaded
   }
 
@@ -29,6 +30,3 @@ export default async function HomePage() {
     <Layout config={config} document={document} />
   );
 }
-        ```
-     
-    

@@ -2,37 +2,37 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { unified, type Processor } from 'unified'; // Import unified
-import remarkParse from 'remark-parse'; // Use remark-parse for the parsing step
+import { unified, type Processor } from 'unified';
+import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypePrismPlus from 'rehype-prism-plus'; // Reverted to rehype-prism-plus
+import rehypePrismPlus from 'rehype-prism-plus';
 import rehypeStringify from 'rehype-stringify';
 import type { MarkdownDocument, SearchDoc } from '@/types';
 import { loadConfig } from '@/lib/config';
-import { visit } from 'unist-util-visit'; // Correct import for visit
-import { toString as hastToString } from 'hast-util-to-string'; // Correct import for hast-util-to-string
+import { visit } from 'unist-util-visit';
+import { toString as hastToString } from 'hast-util-to-string';
+import { VFile } from 'vfile'; // Import VFile
 
 const docsDirectory = path.join(process.cwd(), 'content/docs');
 
 // Helper to remove specific code blocks or elements for search indexing
 const removeElementsForSearch = () => (tree: any) => {
   visit(tree, ['element', 'code'], (node, index, parent) => {
+    if (!parent || !parent.children || index === null) return; // Guard against invalid parent/index
+
     if (node.type === 'element' && node.tagName === 'script') {
-      // console.log("Search Index: Removing script tag:", hastToString(node).substring(0, 50) + "...");
       parent.children.splice(index, 1);
-      return [visit.SKIP, index]; // Adjust index after removal and skip children
+      return [visit.SKIP, index];
     }
     if (node.type === 'element' && node.tagName === 'pre') {
-        // console.log("Search Index: Removing pre block:", hastToString(node).substring(0, 50) + "...");
-        parent.children.splice(index, 1);
-        return [visit.SKIP, index];
+      parent.children.splice(index, 1);
+      return [visit.SKIP, index];
     }
-     if (node.type === 'code') { // Also handles markdown code blocks if they weren't in <pre>
-        // console.log("Search Index: Removing code block:", hastToString(node).substring(0, 50) + "...");
+     if (node.type === 'code') {
         parent.children.splice(index, 1);
         return [visit.SKIP, index];
     }
@@ -81,24 +81,46 @@ function findMarkdownFile(normalizedSlug: string): string | null {
       ];
   }
 
-  // console.log(`findMarkdownFile for slug "${normalizedSlug}": Potential paths - [${potentialPaths.join(', ')}]`);
-
   for (const p of potentialPaths) {
     try {
+      // Check if path exists and is a file
       if (fs.existsSync(p) && fs.statSync(p).isFile()) {
-        // console.log(`   - Found matching file: "${p}"`);
-        return p; // Return the first valid path found
+        return p;
       }
     } catch (e) {
-       if (e instanceof Error && e.code !== 'ENOENT') {
-            console.warn(`   - Warning accessing potential path "${p}":`, e.message);
-       }
+        // Log only errors other than 'file not found'
+        if (e instanceof Error && (e as NodeJS.ErrnoException).code !== 'ENOENT') {
+            console.warn(`---> Warning accessing potential path "${p}":`, e.message);
+        }
     }
   }
 
-  // console.log(`   - No matching file found for slug "${normalizedSlug}" in checked paths.`);
-  return null; // No file found
+  // If no file is found after checking all potentials
+  console.warn(`---> findMarkdownFile: No matching file found for slug "${normalizedSlug}" in checked paths: [${potentialPaths.join(', ')}]`);
+  return null;
 }
+
+
+// Create unified processor instances outside the function for efficiency
+// Processor for rendering HTML content
+const htmlProcessor = unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeRaw)
+  .use(rehypeSlug)
+  .use(rehypeAutolinkHeadings, {
+    behavior: 'wrap',
+    properties: { className: ['anchor'], 'aria-hidden': 'true', tabIndex: -1 }
+  })
+  .use(rehypePrismPlus, { showLineNumbers: false, ignoreMissing: true })
+  .use(rehypeStringify) as Processor; // Assert type
+
+// Processor for extracting text content for search indexing
+const searchProcessor = unified()
+  .use(remarkParse)
+  .use(remarkGfm)
+  .use(removeElementsForSearch) as Processor; // Assert type
 
 
 // Gets the markdown content for a given slug array.
@@ -116,6 +138,7 @@ export async function getMarkdownContentBySlug(slugSegments: string[] | undefine
   let fileContents: string;
   try {
     fileContents = fs.readFileSync(filePath, 'utf8');
+    // console.log(`---> getMarkdownContentBySlug: Successfully READ file "${filePath}" for slug "${normalizedSlug}"`);
   } catch (readError) {
     console.error(`---> getMarkdownContentBySlug: Error READING file "${filePath}" (for slug "${normalizedSlug}"):`, readError);
     return null;
@@ -126,45 +149,30 @@ export async function getMarkdownContentBySlug(slugSegments: string[] | undefine
     documentMatter = matter(fileContents);
   } catch (parseError) {
     console.error(`---> getMarkdownContentBySlug: Error PARSING frontmatter in file "${filePath}" (for slug "${normalizedSlug}"):`, parseError);
+    // If frontmatter parsing fails, treat content as full markdown without data
     documentMatter = { data: {}, content: fileContents, isEmpty: !fileContents, excerpt: '' };
   }
 
   const { data: frontmatter, content: rawMarkdownContent } = documentMatter;
-  const markdownContentForProcessing = rawMarkdownContent ?? '';
+  const markdownContentForProcessing = rawMarkdownContent ?? ''; // Ensure it's a string
 
-  let processedContent;
-  try {
-    // Define the unified pipeline
-    const processor = unified()
-      .use(remarkParse) // Use remark-parse
-      .use(remarkGfm)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeRaw)
-      .use(rehypeSlug)
-      .use(rehypeAutolinkHeadings, {
-        behavior: 'wrap', // Changed from 'append' or 'prepend' if causing issues, wrap is often safer
-        properties: { className: ['anchor'], 'aria-hidden': 'true', tabIndex: -1 }
-      })
-      .use(rehypePrismPlus, { showLineNumbers: false, ignoreMissing: true }) // Use rehype-prism-plus
-      .use(rehypeStringify);
-
-    // Process the content
-    const fileResult = await processor.process(markdownContentForProcessing);
-    processedContent = fileResult.toString();
-
-  } catch (remarkError) {
-    console.error(`---> getMarkdownContentBySlug: Error PROCESSING markdown in file "${filePath}" (for slug "${normalizedSlug}"):`, remarkError);
-    // Provide fallback content or return null depending on desired behavior
-    return {
-        slug: normalizedSlug,
-        title: `Error Processing: ${normalizedSlug}`,
-        contentHtml: `<p>Error processing markdown content.</p><pre>${(remarkError as Error).message}</pre>`,
-        rawContent: rawMarkdownContent,
-        frontmatter: { sourceFilePath: path.relative(docsDirectory, filePath).replace(/\\/g, '/') },
-    };
+  // Check for empty markdown content *after* parsing frontmatter
+  if (markdownContentForProcessing.trim() === '') {
+      console.warn(`---> getMarkdownContentBySlug: Markdown content is empty in file "${filePath}" for slug "${normalizedSlug}".`);
+      // Return minimal document, page component should handle empty content display
   }
 
-  const contentHtml = processedContent;
+
+  let processedContentHtml = '';
+  try {
+    // Process the content for HTML rendering
+    const vfileHtml = new VFile({ path: filePath, value: markdownContentForProcessing }); // Create VFile
+    const fileResultHtml = await htmlProcessor.process(vfileHtml);
+    processedContentHtml = fileResultHtml.toString();
+  } catch (htmlProcessingError) {
+    console.error(`---> getMarkdownContentBySlug: Error PROCESSING markdown to HTML in file "${filePath}" (for slug "${normalizedSlug}"):`, htmlProcessingError);
+    processedContentHtml = `<p class="text-destructive">Error processing markdown content: ${(htmlProcessingError as Error).message}</p>`;
+  }
 
   // Determine title: Use frontmatter title, fallback to making title from slug
   let title = 'Untitled Document';
@@ -176,21 +184,27 @@ export async function getMarkdownContentBySlug(slugSegments: string[] | undefine
           .split(/[-_]/) // Split by hyphen or underscore
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
+      // Use site_name from config for the index page title if available
       if (normalizedSlug === 'index') {
-         const config = loadConfig();
-         title = config.site_name || "Home";
+         try {
+           const config = loadConfig();
+           title = config.site_name || "Home";
+         } catch (configError) {
+             console.warn("Error loading config for index page title fallback:", configError);
+             title = "Home"; // Fallback if config load fails
+         }
       }
   }
 
   // Store the relative path from 'content/docs'
   const sourceFilePath = path.relative(docsDirectory, filePath).replace(/\\/g, '/');
-  const finalFrontmatter = { ...frontmatter, sourceFilePath };
+  const finalFrontmatter = { ...frontmatter, sourceFilePath }; // Add sourceFilePath to frontmatter
 
   return {
     slug: normalizedSlug,
     title: title,
-    contentHtml: contentHtml,
-    rawContent: rawMarkdownContent,
+    contentHtml: processedContentHtml, // Render this HTML
+    rawContent: rawMarkdownContent, // Keep raw markdown for search index / edit links
     frontmatter: finalFrontmatter,
   };
 }
@@ -204,7 +218,8 @@ export function getAllMarkdownSlugs(directory: string = docsDirectory): string[]
     let entries;
     try {
       if (!fs.existsSync(dir)) {
-        return;
+        console.warn(`getAllMarkdownSlugs: Directory not found: ${dir}`);
+        return; // Stop recursion if directory doesn't exist
       }
       entries = fs.readdirSync(dir, { withFileTypes: true });
     } catch (err) {
@@ -220,23 +235,29 @@ export function getAllMarkdownSlugs(directory: string = docsDirectory): string[]
         findFilesRecursively(fullPath, relativePath);
       } else if (entry.isFile() && /\.(mdx|md)$/.test(entry.name)) {
         let slug = relativePath.replace(/\.mdx?$/, '');
+        // Normalize 'folder/index' to 'folder'
         if (slug.endsWith('/index')) {
           slug = slug.substring(0, slug.length - '/index'.length);
-        } else if (path.basename(slug) === 'index') {
-           // Handles root index file case if currentPath was ''
-          slug = 'index';
         }
-        // Ensure root path ('') becomes 'index'
-        slug = slug || 'index';
-        slugs.add(slug);
+        // Handle root index file ('index' or '/index' after removing .md)
+        else if (path.basename(slug) === 'index' && (path.dirname(slug) === '.' || path.dirname(slug) === '/')) {
+           slug = 'index';
+        }
+        // Ensure root path ('/' or '') becomes 'index'
+        slug = (slug === '' || slug === '/') ? 'index' : slug.replace(/^\//, ''); // Also remove leading slash for non-root slugs
+
+        // Skip empty slugs if they somehow occur
+        if (slug) {
+           slugs.add(slug);
+        }
       }
     }
   }
 
   findFilesRecursively(directory, '');
-  // No need to explicitly add 'index' here anymore, the logic above should handle it.
   return Array.from(slugs);
 }
+
 
 // Fetches all documents for search indexing
 export async function getAllMarkdownDocumentsForSearch(): Promise<SearchDoc[]> {
@@ -244,23 +265,22 @@ export async function getAllMarkdownDocumentsForSearch(): Promise<SearchDoc[]> {
   // console.log(`getAllMarkdownDocumentsForSearch: Found ${slugs.length} slugs for search indexing: [${slugs.join(', ')}]`);
 
   const documentPromises = slugs.map(async (slug) => {
-    const doc = await getMarkdownContentBySlug(slug === 'index' ? undefined : slug.split('/'));
+    // Ensure slug 'index' is fetched correctly
+    const slugSegments = slug === 'index' ? [] : slug.split('/');
+    const doc = await getMarkdownContentBySlug(slugSegments);
+
     if (!doc || typeof doc.rawContent !== 'string') {
-        console.warn(`Search Indexing: Skipping doc with null/invalid rawContent for slug: ${slug}`);
+        // console.warn(`Search Indexing: Skipping doc with null/invalid rawContent for slug: ${slug}`);
         return null;
     }
 
     // Process raw markdown to extract text content for search
     try {
-      const processor = unified()
-        .use(remarkParse)
-        .use(remarkGfm)
-        .use(removeElementsForSearch); // Use the custom plugin to remove elements
-
-      const tree = processor.parse(doc.rawContent);
-      const textContent = hastToString(tree) // Directly convert the mdast tree to string
-                      .replace(/\s+/g, ' ') // Normalize whitespace
-                      .trim();
+      const vfileSearch = new VFile({ path: doc.frontmatter.sourceFilePath || `${slug}.md`, value: doc.rawContent });
+      const tree = searchProcessor.parse(vfileSearch);
+      const textContent = hastToString(tree) // Use the tree obtained from the searchProcessor
+                        .replace(/\s+/g, ' ') // Normalize whitespace
+                        .trim();
 
       return {
         slug: doc.slug,
@@ -293,6 +313,5 @@ export async function getAllMarkdownDocumentsForSearch(): Promise<SearchDoc[]> {
   // console.log(`getAllMarkdownDocumentsForSearch: Returning ${validDocs.length} valid documents for search index.`);
   return validDocs;
 }
-        ```
-        
-      
+
+
