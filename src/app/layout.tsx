@@ -5,37 +5,35 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { loadConfig } from '@/lib/config';
-import { SiteConfig } from '@/types';
+import type { SiteConfig } from '@/types';
 
 const config: SiteConfig = loadConfig();
 
 export const metadata: Metadata = {
-  metadataBase: config.site_url ? new URL(config.site_url) : undefined, // Add metadataBase for absolute URLs
+  metadataBase: config.site_url ? new URL(config.site_url) : undefined,
   title: {
-    default: config.site_name || "DevDocs++", // Add fallback title
-    template: `%s | ${config.site_name || "DevDocs++"}`, // Add fallback title
+    default: config.site_name || "DevDocs++",
+    template: `%s | ${config.site_name || "DevDocs++"}`,
   },
   description: config.site_description,
   authors: config.site_author ? [{ name: config.site_author }] : [],
-  // Use the favicon_path from config.yml. Ensure the path starts with '/' if relative to public dir.
-  // Add multiple sizes for better compatibility
-  icons: config.favicon_path ? [
-      { rel: 'icon', url: config.favicon_path }, // Standard favicon
-      // Example: Add apple-touch-icon if you have one
-      // { rel: 'apple-touch-icon', url: '/apple-touch-icon.png' }, 
-      ] 
-      : [{ rel: 'icon', url: '/favicon.ico' }], // Default fallback
-  // Open Graph and Twitter Card metadata (Basic Example)
+  icons: config.favicon_path 
+    ? [
+        { rel: 'icon', url: config.favicon_path, type: 'image/x-icon', sizes: '16x16' },
+        // You can add more specific icon links here if needed, e.g., for different sizes or apple-touch-icon
+        // { rel: 'icon', type: 'image/png', sizes: '32x32', url: '/favicon-32x32.png' },
+        // { rel: 'apple-touch-icon', sizes: '180x180', url: '/apple-touch-icon.png' },
+      ]
+    : [{ rel: 'icon', url: '/favicon.ico', type: 'image/x-icon', sizes: '16x16' }], // Default fallback
   openGraph: {
     title: config.site_name,
     description: config.site_description,
     url: config.site_url,
     siteName: config.site_name,
-    // Assuming logo_path can be used as an Open Graph image
     images: config.logo_path ? [
       {
-        url: config.logo_path, // Needs to be an absolute URL or Next.js needs metadataBase
-        width: 800, // Provide dimensions if known
+        url: config.logo_path, 
+        width: 800, 
         height: 600,
         alt: `${config.site_name} Logo`,
       },
@@ -47,21 +45,21 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: config.site_name,
     description: config.site_description,
-     // Assuming logo_path can be used as a Twitter image
-    images: config.logo_path ? [config.logo_path] : [], // Needs absolute URL
-    // Optional: Add Twitter handle if available
-    // creator: '@yourTwitterHandle', 
+    images: config.logo_path ? [config.logo_path] : [], 
   },
 };
 
-
 // Optional: Configure viewport settings
-// export const viewport: Viewport = {
-//   themeColor: [
-//     { media: '(prefers-color-scheme: light)', color: 'hsl(var(--background))' }, // Use CSS vars
-//     { media: '(prefers-color-scheme: dark)', color: 'hsl(var(--background))' },
-//   ],
-// }
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: 'hsl(var(--background))' }, 
+    { media: '(prefers-color-scheme: dark)', color: 'hsl(var(--background))' },
+  ],
+  // Add other viewport settings if needed
+  // width: 'device-width',
+  // initialScale: 1,
+  // maximumScale: 1,
+}
 
 export default function RootLayout({
   children,
@@ -69,15 +67,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Removed suppressHydrationWarning from <html>
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning> {/* Added suppressHydrationWarning here */}
       <body
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}
-        suppressHydrationWarning // Keep this here ONLY if browser extensions are known to cause issues
+        suppressHydrationWarning // Keep this for potential browser extension issues
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme={config.theme.default}
+          defaultTheme={config.theme.default || "system"}
           enableSystem
           disableTransitionOnChange
         >
