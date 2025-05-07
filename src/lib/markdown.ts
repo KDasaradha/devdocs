@@ -14,12 +14,29 @@ import type { MarkdownDocument, SearchDoc } from '@/types';
 const docsDirectory = path.join(process.cwd(), 'content/docs');
 
 export async function getMarkdownContentBySlug(slug: string): Promise<MarkdownDocument | null> {
-  const fullSlug = slug === 'index' || slug === '' ? 'index' : slug;
-  const realSlug = fullSlug.replace(/\.md$/, '');
-  const filePath = path.join(docsDirectory, `${realSlug}.md`);
+  // Normalize slug: treat empty or 'index' (case-insensitive) as 'index' for root
+  const normalizedSlug = (slug === '' || slug.toLowerCase() === 'index') ? 'index' : slug.replace(/\.md$/, '');
+
+  const directFilePath = path.join(docsDirectory, `${normalizedSlug}.md`);
+  const indexFilePath = path.join(docsDirectory, normalizedSlug, 'index.md');
+
+  let filePathToTry: string | undefined;
+  let fileSourceDescription: string = "";
+
+
+  if (fs.existsSync(directFilePath)) {
+    filePathToTry = directFilePath;
+    fileSourceDescription = `as '${normalizedSlug}.md'`;
+  } else if (fs.existsSync(indexFilePath)) {
+    filePathToTry = indexFilePath;
+    fileSourceDescription = `as directory index '${normalizedSlug}/index.md'`;
+  } else {
+    console.warn(`Markdown file not found for slug "${normalizedSlug}". Tried paths:\n  - ${directFilePath}\n  - ${indexFilePath}`);
+    return null;
+  }
 
   try {
-    const fileContents = fs.readFileSync(filePath, 'utf8');
+    const fileContents = fs.readFileSync(filePathToTry, 'utf8');
     const { data, content } = matter(fileContents);
 
     const processedContent = await remark()
@@ -35,14 +52,14 @@ export async function getMarkdownContentBySlug(slug: string): Promise<MarkdownDo
     const contentHtml = processedContent.toString();
 
     return {
-      slug: realSlug,
-      title: data.title || realSlug.split('/').pop()?.replace(/-/g, ' ') || 'Untitled',
+      slug: normalizedSlug, // Return the slug that was used to find the content
+      title: data.title || normalizedSlug.split('/').pop()?.replace(/-/g, ' ').replace(/_/g, ' ') || 'Untitled',
       contentHtml,
       rawContent: content, // For search indexing
       frontmatter: data,
     };
   } catch (error) {
-    console.error(`Error reading markdown file for slug "${realSlug}":`, error);
+    console.error(`Error reading or processing markdown file at "${filePathToTry}" (for slug "${normalizedSlug}", found ${fileSourceDescription}):`, error);
     return null;
   }
 }
@@ -52,22 +69,25 @@ export function getAllMarkdownSlugs(directory: string = docsDirectory, base: str
   let slugs: string[] = [];
 
   files.forEach((file) => {
-    const filePath = path.join(directory, file.name);
-    const relativePath = path.join(base, file.name);
+    const currentPath = path.join(base, file.name);
     if (file.isDirectory()) {
-      slugs = slugs.concat(getAllMarkdownSlugs(filePath, relativePath));
+      slugs = slugs.concat(getAllMarkdownSlugs(path.join(directory, file.name), currentPath));
     } else if (file.name.endsWith('.md')) {
-      const slug = relativePath.replace(/\.md$/, '');
-      // Treat 'index.md' at any level as the directory's root page
-      if (file.name === 'index.md') {
-        slugs.push(path.dirname(slug) === '.' ? 'index' : path.dirname(slug));
-      } else {
-        slugs.push(slug);
+      let slug = currentPath.replace(/\.md$/, '');
+      slug = slug.replace(/\\/g, '/'); // Normalize to forward slashes
+
+      if (path.basename(slug) === 'index') {
+        slug = path.dirname(slug);
+        if (slug === '.' || slug === '') { // Root index.md
+          slug = 'index';
+        }
       }
+      slugs.push(slug);
     }
   });
-  // Normalize paths to use forward slashes
-  return slugs.map(s => s.replace(/\\/g, '/'));
+  // Remove duplicates which might arise if e.g. a directory is named 'index'
+  // and also contains an 'index.md'
+  return [...new Set(slugs)];
 }
 
 
@@ -76,13 +96,17 @@ export async function getAllMarkdownDocumentsForSearch(): Promise<SearchDoc[]> {
   const documents: SearchDoc[] = [];
 
   for (const slug of slugs) {
-    const doc = await getMarkdownContentBySlug(slug);
+    const effectiveSlug = (slug === '.' || slug === '') ? 'index' : slug;
+    const doc = await getMarkdownContentBySlug(effectiveSlug);
     if (doc) {
       documents.push({
         slug: doc.slug,
         title: doc.title,
         content: doc.rawContent,
       });
+    } else {
+      // This warning is now inside getMarkdownContentBySlug if file isn't found
+      // console.warn(`Search: Document not found for slug '${effectiveSlug}' during search indexing.`);
     }
   }
   return documents;

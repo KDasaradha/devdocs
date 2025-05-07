@@ -12,20 +12,21 @@ const normalizeNavPaths = (navItems: NavItemConfig[]): NavItemConfig[] => {
   return navItems.map(item => {
     const newItem = { ...item };
     if (newItem.path && typeof newItem.path === 'string' && !newItem.path.startsWith('http')) {
-      // Remove .md extension
-      let cleanPath = newItem.path.replace(/\.md$/, '');
-      // Remove leading/trailing slashes to ensure it's a "slug"
-      cleanPath = cleanPath.replace(/^\/+|\/+$/g, '');
-      
-      // If after stripping slashes, it's empty, and original was a form of index (e.g., "/", "index", "/index"), set to 'index'
-      if (cleanPath === '' && (newItem.path === '/' || newItem.path.toLowerCase() === 'index' || newItem.path.toLowerCase() === '/index')) {
-        cleanPath = 'index';
+      let slug = newItem.path.replace(/\.md$/, ''); // Remove .md extension
+      slug = slug.replace(/^\/+|\/+$/g, '');     // Remove leading/trailing slashes
+      slug = slug.replace(/\\/g, '/');           // Normalize to forward slashes
+
+      // If it's an index file (e.g., "foo/index" or "index"), convert to directory slug or root "index"
+      if (path.basename(slug).toLowerCase() === 'index') {
+        slug = path.dirname(slug);
+        if (slug === '.' || slug === '') { // handles "index" or "/index" becoming "." or ""
+          slug = 'index';
+        }
+      } else if (slug === '') { // handles "/" or an empty path becoming ""
+        slug = 'index';
       }
-      // If path is still empty and it wasn't an index-like path, it might be an error or intentional empty path. For safety, treat as unlinked.
-      // However, config.yml paths should be meaningful slugs.
-      newItem.path = cleanPath === '' && !newItem.path.match(/^(\/|index|\/index)$/i) ? undefined : cleanPath;
-
-
+      
+      newItem.path = slug;
     }
     if (newItem.children) {
       newItem.children = normalizeNavPaths(newItem.children); // Recurse
@@ -63,6 +64,7 @@ export function loadConfig(): SiteConfig {
     return config;
   } catch (error) {
     console.error("Error loading or parsing config.yml:", error);
+    // Provide a default fallback configuration
     return {
       site_name: "DevDocs++ (Error)",
       nav: [{ title: "Home", path: "index" }],
