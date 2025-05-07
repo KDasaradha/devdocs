@@ -34,10 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning> {/* Keep suppressHydrationWarning on html for theme provider */}
-      <body 
+    <html lang="en" suppressHydrationWarning>
+      <body
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}
-        suppressHydrationWarning // Keep this here if browser extensions add attributes
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"
