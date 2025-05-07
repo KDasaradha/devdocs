@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning> {/* Keep on html for theme switching */}
+    <html lang="en" suppressHydrationWarning>{/* Keep on html for theme switching, removed whitespace */}
       <body 
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}
         // Removed suppressHydrationWarning from body - if issues persist, look at browser extensions or invalid HTML nesting

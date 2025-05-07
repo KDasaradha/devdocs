@@ -6,41 +6,63 @@ import { SearchProvider } from '@/components/search/search-provider';
 import type { SiteConfig, MarkdownDocument, SearchDoc } from '@/types';
 import { getPrevNextPages, getNavLinkHref } from '@/lib/navigation';
 import { PageNavigation } from '@/components/navigation/page-navigation';
-import { notFound } from 'next/navigation'; // Import notFound
+import path from 'path'; // Import path for edit URL construction
 
 interface LayoutProps {
   config: SiteConfig;
-  document: MarkdownDocument | null;
+  document: MarkdownDocument | null; // Allow document to be null for 404/error pages
   searchDocs: SearchDoc[]; 
-  children?: React.ReactNode; // Allow passing children explicitly (for 404)
+  children?: React.ReactNode; // Accept children for custom content like 404
 }
 
 export function Layout({ config, document, searchDocs, children }: LayoutProps) {
   const { site_name, nav, copyright, repo_url, edit_uri } = config;
+  // Use empty string if document is null, handle in getPrevNextPages
   const currentSlug = document?.slug || ''; 
-
-  // If there's no document and no children passed (e.g., error case from page.tsx), trigger notFound
-  if (!document && !children) {
-     console.warn("Layout received null document and no children, rendering not found.");
-     notFound(); 
-  }
 
   const { prev, next } = getPrevNextPages(currentSlug, nav);
 
+  // Function to generate the "Edit this page" URL
   const getEditUrl = () => {
-    if (!repo_url || !edit_uri || !document) return null;
-    
-    // Construct the edit URL based on repo structure and slug
-    // This needs adjustment based on how 'edit_uri' and slugs relate to actual file paths
-    // Example assumes edit_uri points to the directory containing the 'content/docs' folder in the repo
+    // Ensure all necessary parts are present and document exists
+    if (!repo_url || !edit_uri || !document || !document.slug) return null;
+
+    // Construct the base edit URI, ensuring it ends with a slash if it's a directory path
     const baseEditUri = edit_uri.endsWith('/') ? edit_uri : `${edit_uri}/`;
-    const filePath = document.slug === 'index' ? 'index.md' : `${document.slug}.md`; // Reconstruct potential file path
-    // This might need refinement if slugs don't map directly to file paths in the repo
-    return `${repo_url}/${baseEditUri}content/docs/${filePath}`;
+    
+    // Construct the likely file path relative to the `content/docs` dir in the repo
+    // This assumes slugs directly map to file paths or directory paths containing index.md
+    let relativeFilePath = '';
+    if (document.slug === 'index') {
+      relativeFilePath = 'index.md'; // Root index file
+    } else {
+        // Need to reconstruct the potential original path which might include '/index'
+        // This is heuristic - might need adjustment based on actual file structure
+        // A simple approach: assume slug maps directly to .md or /index.md
+        // A better approach might involve storing the original file path during markdown processing
+        relativeFilePath = `${document.slug}.md`; 
+        // Check if slug represents a directory? (This is hard without filesystem access here)
+        // If a reliable mapping from slug to file path isn't possible here, 
+        // this URL might sometimes be incorrect for nested index files.
+    }
+
+    // Combine parts, ensuring clean path joining
+    // Example: repo_url = https://github.com/user/repo
+    //          baseEditUri = blob/main/docs/
+    //          filePath = content/docs/guides/getting-started.md
+    // Result: https://github.com/user/repo/blob/main/docs/content/docs/guides/getting-started.md 
+    // NOTE: The `edit_uri` often *includes* the base path like `blob/main/docs/`, so we need to be careful not to duplicate `docs/`.
+    // Let's assume edit_uri points *up to* the `content` directory or similar. Revisit if needed.
+    const combinedPath = path.join('content/docs', relativeFilePath).replace(/\\/g, '/'); // Path within repo
+    
+    // Ensure repo_url doesn't have trailing slash and baseEditUri doesn't have leading slash if repo_url has one
+    const cleanRepoUrl = repo_url.replace(/\/$/, '');
+    const cleanBaseEditUri = baseEditUri.replace(/^\//, '');
+
+    return `${cleanRepoUrl}/${cleanBaseEditUri}${combinedPath}`;
   };
 
   const editUrl = getEditUrl();
-
 
   return (
     <SearchProvider searchDocs={searchDocs}>
@@ -50,10 +72,11 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
           <div className="flex flex-col md:flex-row">
             <Sidebar navItems={nav} />
             {/* Adjusted padding-left for sidebar width */}
-            <main className="flex-1 md:pl-[13rem] lg:pl-[14rem] py-8 w-full overflow-x-hidden"> 
-              {/* Increased max-width and centering */}
-              <article className="prose dark:prose-invert max-w-4xl mx-auto w-full"> 
+            <main className="flex-1 md:pl-52 lg:pl-56 py-8 w-full overflow-x-hidden"> 
+              {/* Add group class here for prose anchor hover effects */}
+              <article className="prose dark:prose-invert max-w-4xl mx-auto w-full group"> 
                 {document ? (
+                  // Render document content if available
                   <>
                     <PageTitle title={document.title} />
                     <MarkdownRenderer contentHtml={document.contentHtml} />
@@ -72,7 +95,7 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
                     <PageNavigation prevPage={prev} nextPage={next} />
                   </>
                 ) : (
-                  // Render explicitly passed children (like the 404 content)
+                  // Render explicitly passed children (e.g., the 404 content) if document is null
                   children 
                 )}
               </article>

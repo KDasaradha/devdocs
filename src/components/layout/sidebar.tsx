@@ -7,8 +7,8 @@ interface SidebarProps {
 
 export function Sidebar({ navItems }: SidebarProps) {
   return (
-    <aside className="hidden md:block fixed top-16 z-30 h-[calc(100vh-4rem)] w-52 lg:w-56 shrink-0 overflow-y-auto border-r py-6"> 
-      {/* Adjusted width classes: w-52 -> ~13rem, lg:w-56 -> ~14rem */}
+    // Reduced width: w-52 -> w-44 (~11rem), lg:w-56 -> lg:w-48 (~12rem)
+    <aside className="hidden md:block fixed top-16 z-30 h-[calc(100vh-4rem)] w-44 lg:w-48 shrink-0 overflow-y-auto border-r py-6"> 
       <NavMenu navItems={navItems} />
     </aside>
   );

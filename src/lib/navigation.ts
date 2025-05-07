@@ -5,20 +5,21 @@ export interface NavPage {
   path: string; // Stores the "slug" form: 'index', 'about', 'guides/getting-started'
 }
 
-// Flattens the navigation structure into a list of pages with paths
+// Flattens the navigation structure into a list of pages with paths suitable for prev/next
 export function flattenNavigation(navItems: NavItemConfig[]): NavPage[] {
   const pages: NavPage[] = [];
-  function recurse(items: NavItemConfig[]) {
+  function recurse(items: NavItemConfig[], currentPathPrefix: string = '') {
     for (const item of items) {
-      // Only add items with a valid internal path to the flattened list for prev/next
-      if (item.path && typeof item.path === 'string' && !item.path.startsWith('http')) {
-        // Exclude paths containing '#' as they are likely section links within a page
-        if (!item.path.includes('#')) {
-            pages.push({ title: item.title, path: item.path });
-        }
+      // Only consider items with a valid internal path for prev/next navigation
+      if (item.path && typeof item.path === 'string' && !item.path.startsWith('http') && !item.path.includes('#')) {
+        pages.push({ title: item.title, path: item.path });
       }
+      // Recurse into children
       if (item.children) {
-        recurse(item.children);
+        // Determine the path prefix for children if the parent has a path
+        // Note: This assumes children paths are relative or absolute slugs, not section links
+        const childPathPrefix = item.path && !item.path.includes('#') ? item.path : currentPathPrefix;
+        recurse(item.children, childPathPrefix);
       }
     }
   }
@@ -26,43 +27,48 @@ export function flattenNavigation(navItems: NavItemConfig[]): NavPage[] {
   return pages;
 }
 
-// Finds the previous and next page in the flattened navigation list
+// Finds the previous and next page in the flattened navigation list based on SLUG only (ignores anchors)
 export function getPrevNextPages(
   currentSlug: string,
   navItems: NavItemConfig[]
 ): { prev: NavPage | null; next: NavPage | null } {
+  // Flatten the navigation structure to get a linear list of navigable pages
   const flattenedNav = flattenNavigation(navItems);
-  const currentIndex = flattenedNav.findIndex(page => page.path === currentSlug);
+  
+  // Find the index of the current page based purely on its slug (ignore any #anchor part)
+  const baseSlug = currentSlug.split('#')[0]; 
+  const currentIndex = flattenedNav.findIndex(page => page.path === baseSlug);
 
   if (currentIndex === -1) {
-    // Current slug might be a section link, try finding the base page
-    const baseSlug = currentSlug.split('#')[0];
-     const baseIndex = flattenedNav.findIndex(page => page.path === baseSlug);
-     if(baseIndex === -1) {
-        return { prev: null, next: null }; // Base page not found either
-     }
-     const prev = baseIndex > 0 ? flattenedNav[baseIndex - 1] : null;
-     const next = baseIndex < flattenedNav.length - 1 ? flattenedNav[baseIndex + 1] : null;
-     return { prev, next };
+     console.warn(`Current base slug "${baseSlug}" not found in flattened navigation for prev/next.`);
+     return { prev: null, next: null }; // Page not found in nav structure
   }
 
+  // Determine previous and next pages based on the found index
   const prev = currentIndex > 0 ? flattenedNav[currentIndex - 1] : null;
   const next = currentIndex < flattenedNav.length - 1 ? flattenedNav[currentIndex + 1] : null;
   
   return { prev, next };
 }
 
-// Generates the href for a navigation item's path
+// Generates the href for a navigation link based on the path defined in config.yml
 export function getNavLinkHref(pagePath: string | undefined): string {
-  if (!pagePath) {
-    return '#'; // No path defined
+  if (!pagePath || typeof pagePath !== 'string') {
+    console.warn("getNavLinkHref called with invalid pagePath:", pagePath);
+    return '#'; // Return a non-functional link for undefined paths
   }
-  if (pagePath.startsWith('http')) {
-    return pagePath; // External link
-  }
-  // Handle internal paths including potential anchors
-  const [slugPart, anchorPart] = pagePath.split('#');
-  const baseHref = slugPart === 'index' || slugPart === '' ? '/' : `/${slugPart}`;
   
+  // Handle external links directly
+  if (pagePath.startsWith('http://') || pagePath.startsWith('https://')) {
+    return pagePath;
+  }
+
+  // Handle internal paths (slugs with optional anchors)
+  const [slugPart, anchorPart] = pagePath.split('#');
+  
+  // Construct base href from slug: '/' for 'index', '/slug' otherwise
+  const baseHref = slugPart === 'index' ? '/' : `/${slugPart}`;
+  
+  // Append anchor if present
   return anchorPart ? `${baseHref}#${anchorPart}` : baseHref;
 }

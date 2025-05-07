@@ -20,73 +20,264 @@ nav:
     path: index
   - title: About
     path: about
-  - title: Comprehensive Guide # Changed: Made this a parent item
-    path: guides/comprehensive-fastapi-guide # Parent links to the top
+  - title: Comprehensive Guide
+    path: guides/comprehensive-fastapi-guide # Parent links to the top overview page
     children:
+      # Section 1
       - title: 1. Intro to APIs & FastAPI
         path: guides/comprehensive-fastapi-guide#1-introduction-to-apis-and-fastapi
+      - title: 1.1 What is an API?
+        path: api-fundamentals/what-is-an-api
+      - title: 1.2 Types of APIs
+        path: api-fundamentals/types-of-apis
+      - title: 1.3 REST API Principles
+        path: api-fundamentals/rest-api-principles
+      - title: 1.4 Introduction to FastAPI
+        path: fastapi/introduction/introduction-to-fastapi
+      # Section 2
       - title: 2. Core FastAPI Concepts
         path: guides/comprehensive-fastapi-guide#2-core-fastapi-concepts
+      - title: 2.1 Basic FastAPI Application
+        path: fastapi/core-concepts/basic-application
+      - title: 2.2 Path and Query Parameters
+        path: fastapi/core-concepts/path-and-query-parameters
+      - title: 2.3 Request Body and Pydantic Models
+        path: fastapi/core-concepts/request-body-and-pydantic-models
+      - title: 2.4 Response Models and Status Codes
+        path: fastapi/core-concepts/response-models-and-status-codes
+      - title: 2.5 Async Endpoints
+        path: fastapi/core-concepts/async-endpoints
+      # Section 3
       - title: 3. Database Handling with SQLAlchemy
         path: guides/comprehensive-fastapi-guide#3-database-handling-with-sqlalchemy
+      - title: 3.1 Introduction to SQLAlchemy
+        path: sqlalchemy/introduction/introduction-to-sqlalchemy
+      - title: 3.2 FastAPI with SQLAlchemy
+        path: sqlalchemy/fastapi-integration/session-management
+      - title: 3.3 Pydantic and SQLAlchemy Integration
+        path: sqlalchemy/pydantic-integration/pydantic-sqlalchemy-integration
+      - title: 3.4 SQLAlchemy Best Practices
+        path: sqlalchemy/best-practices/general-best-practices
+      - title: 3.5 Table Creation Methods
+        path: sqlalchemy/modeling/table-creation-methods
+      - title: 3.6 Utilizing Declarative Base Effectively
+        path: sqlalchemy/modeling/declarative-base-usage
+      - title: 3.7 Multi-Tenant Architectures
+        path: sqlalchemy/advanced-patterns/multi-tenancy
+      # Section 4
       - title: 4. Advanced FastAPI Features
         path: guides/comprehensive-fastapi-guide#4-advanced-fastapi-features
+      - title: 4.1 Dependency Injection
+        path: fastapi/advanced-features/dependency-injection
+      - title: 4.2 Background Tasks
+        path: fastapi/advanced-features/background-tasks
+      - title: 4.3 WebSockets
+        path: fastapi/advanced-features/websockets
+      - title: 4.4 FastAPI Admin
+        path: fastapi/ecosystem/fastapi-admin
+      - title: 4.5 Custom Middleware
+        path: fastapi/advanced-features/custom-middleware
+      - title: 4.6 Event Handlers (Startup/Shutdown)
+        path: fastapi/advanced-features/event-handlers
+      - title: 4.7 Custom APIRouter
+        path: fastapi/routing/custom-apirouter
+      - title: 4.8 Dependency Overrides
+        path: fastapi/testing/dependency-overrides
+      - title: 4.9 Custom Exception Handlers
+        path: fastapi/error-handling/custom-exception-handlers
+      - title: 4.10 Streaming Responses
+        path: fastapi/responses/streaming-responses
+      - title: 4.11 File Uploads
+        path: fastapi/requests/file-uploads
+      - title: 4.12 OpenAPI Customization
+        path: fastapi/openapi/customization
+      - title: 4.13 Server-Sent Events (SSE)
+        path: fastapi/real-time/server-sent-events
+      - title: 4.14 Custom Response Classes
+        path: fastapi/responses/custom-response-classes
+      - title: 4.15 Request Context
+        path: fastapi/advanced-features/request-context
+      # Section 5
       - title: 5. FastAPI Security
         path: guides/comprehensive-fastapi-guide#5-fastapi-security
+      - title: 5.1 Security Mechanisms Overview
+        path: fastapi/security/overview
+      - title: 5.2 Basic Authentication
+        path: fastapi/security/basic-authentication
+      - title: 5.3 JWT Authentication
+        path: fastapi/security/jwt-authentication
+      - title: 5.4 OAuth2 Authentication
+        path: fastapi/security/oauth2-authentication
+      - title: 5.5 API Key Authentication
+        path: fastapi/security/api-key-authentication
+      - title: 5.6 Rate Limiting
+        path: fastapi/security/rate-limiting
+      - title: 5.7 CSRF Protection
+        path: fastapi/security/csrf-protection
+      - title: 5.8 Advanced Security Techniques
+        path: fastapi/security/advanced-techniques
+      - title: 5.9 Token Refresh Mechanisms
+        path: fastapi/security/token-refresh
+      - title: 5.10 Secure Cookie-Based Authentication
+        path: fastapi/security/cookie-authentication
+      - title: 5.11 Zero Trust Security Model
+        path: fastapi/security/zero-trust
+      # Section 6
       - title: 6. Performance & Optimization
         path: guides/comprehensive-fastapi-guide#6-performance-and-optimization
+      - title: 6.1 Optimizing FastAPI Performance
+        path: fastapi/performance/optimizing-fastapi-performance
+      - title: 6.2 Error Handling and Logging
+        path: fastapi/performance/error-handling-and-logging
+      - title: 6.3 SQLAlchemy Performance Optimization
+        path: sqlalchemy/performance/sqlalchemy-performance
+      # Section 7
       - title: 7. Advanced SQLAlchemy
         path: guides/comprehensive-fastapi-guide#7-advanced-sqlalchemy-techniques
+      - title: 7.1 Advanced Querying
+        path: sqlalchemy/advanced-techniques/advanced-querying
+      - title: 7.2 Triggers and Views
+        path: sqlalchemy/advanced-techniques/triggers-and-views
+      - title: 7.3 Hybrid Properties and Methods
+        path: sqlalchemy/advanced-techniques/hybrid-properties
+      - title: 7.4 Inheritance Mapping
+        path: sqlalchemy/advanced-techniques/inheritance-mapping
+      - title: 7.5 ORM Events
+        path: sqlalchemy/advanced-techniques/orm-events
+      - title: 7.6 Async SQLAlchemy
+        path: sqlalchemy/async/async-sqlalchemy
+      # Section 8
       - title: 8. Pydantic Advanced Features
         path: guides/comprehensive-fastapi-guide#8-pydantic-advanced-features
+      - title: 8.1 Custom Validators
+        path: pydantic/advanced-features/custom-validators
+      - title: 8.2 Settings Management
+        path: pydantic/advanced-features/settings-management
+      - title: 8.3 Complex Nested Models
+        path: pydantic/advanced-features/complex-nested-models
+      - title: 8.4 Serialization Customization
+        path: pydantic/advanced-features/serialization
+      - title: 8.5 Generic Models
+        path: pydantic/advanced-features/generic-models
+      - title: 8.6 Dataclasses Integration
+        path: pydantic/advanced-features/dataclasses
+      # Section 9
       - title: 9. Async Programming
         path: guides/comprehensive-fastapi-guide#9-async-programming
+      - title: 9.1 Sync vs. Async
+        path: async-programming/sync-vs-async
+      - title: 9.2 Async DB Connections
+        path: async-programming/async-db-connections
+      - title: 9.3 Async Middleware
+        path: async-programming/async-middleware
+      - title: 9.4 Running Tasks Concurrently
+        path: fastapi/performance/optimizing-fastapi-performance # Reuses existing relevant section
+      - title: 9.5 Async Generators
+        path: data-streaming/async-generators # Reuses existing relevant section
+      # Section 10
       - title: 10. Integrations & Architectures
         path: guides/comprehensive-fastapi-guide#10-integrations-and-architectures
+      - title: 10.1 Third-Party Integrations
+        path: integrations-and-architectures/third-party-integrations
+      - title: 10.2 GraphQL Integration
+        path: integrations-and-architectures/graphql-integration
+      - title: 10.3 Microservices Architecture
+        path: integrations-and-architectures/microservices-architecture
+      - title: 10.4 Celery Integration
+        path: integrations-and-architectures/celery-integration
+      - title: 10.5 Kafka Integration
+        path: integrations-and-architectures/kafka-integration
+      # Section 11
       - title: 11. Deployment & Testing
         path: guides/comprehensive-fastapi-guide#11-deployment-and-testing
+      - title: 11.1 Deploying FastAPI
+        path: deployment-and-testing/deploying-fastapi
+      - title: 11.2 Testing FastAPI
+        path: deployment-and-testing/testing-fastapi
+      - title: 11.3 Monitoring and Logging
+        path: deployment-and-testing/monitoring-and-logging
+      - title: 11.4 Load Testing
+        path: deployment-and-testing/load-testing
+      # Section 12
       - title: 12. FastAPI Pro-Level Features
         path: guides/comprehensive-fastapi-guide#12-fastapi-pro-level-features
+      - title: 12.1 Custom ASGI Middleware
+        path: fastapi-pro/custom-asgi-middleware
+      - title: 12.2 HTTP/2 & gRPC
+        path: fastapi-pro/http2-grpc
+      - title: 12.3 Dynamic Route Generation
+        path: fastapi-pro/dynamic-route-generation
+      # Section 13
       - title: 13. API Versioning
         path: guides/comprehensive-fastapi-guide#13-api-versioning-in-fastapi
+      - title: 13.1 Versioning Strategies
+        path: api-versioning/strategies
+      # Section 14
       - title: 14. AI/ML Integration
         path: guides/comprehensive-fastapi-guide#14-ai-and-machine-learning-integration
+      - title: 14.1 Serving ML Models
+        path: ai-ml-integration/serving-ml-models
+      # Section 15
       - title: 15. Serverless Optimizations
         path: guides/comprehensive-fastapi-guide#15-serverless-optimizations
+      - title: 15.1 Optimizing for Serverless
+        path: serverless-optimizations/optimizing-for-serverless
+      # Section 16
       - title: 16. Advanced Documentation
         path: guides/comprehensive-fastapi-guide#16-advanced-documentation-practices
+      - title: 16.1 Enhanced API Documentation
+        path: advanced-documentation/enhanced-api-docs
+      # Section 17
       - title: 17. Data Streaming
         path: guides/comprehensive-fastapi-guide#17-data-streaming-with-async-generators
+      - title: 17.1 Async Data Streaming
+        path: data-streaming/async-generators
+      # Section 18
       - title: 18. FastAPI with Rust
         path: guides/comprehensive-fastapi-guide#18-fastapi-with-rust-extensions
+      - title: 18.1 Integrating Rust
+        path: fastapi-with-rust/integrating-rust
+      # Section 19
       - title: 19. SQLAlchemy w/ Data Lakes
         path: guides/comprehensive-fastapi-guide#19-sqlalchemy-with-data-lakes
+      - title: 19.1 Querying Data Lakes
+        path: sqlalchemy-with-datalakes/querying-data-lakes
+      # Section 20
       - title: 20. Pydantic w/ Schema Registry
         path: guides/comprehensive-fastapi-guide#20-pydantic-with-schema-registry
+      - title: 20.1 Schema Registry Integration
+        path: pydantic-with-schema-registry/integration
+      # Section 21
       - title: 21. Async GraphQL Subs
         path: guides/comprehensive-fastapi-guide#21-async-graphql-subscriptions
+      - title: 21.1 Implementing GraphQL Subscriptions
+        path: async-graphql-subscriptions/implementation
+      # Section 22
       - title: 22. FastAPI Edge Computing
         path: guides/comprehensive-fastapi-guide#22-fastapi-with-edge-computing
+      - title: 22.1 Deploying FastAPI on Edge Nodes
+        path: fastapi-edge-computing/deployment
+      # Section 23
       - title: 23. Zero-Downtime Migrations
         path: guides/comprehensive-fastapi-guide#23-zero-downtime-migrations-with-sqlalchemy
+      - title: 23.1 Zero-Downtime DB Migrations
+        path: sqlalchemy/migrations/zero-downtime
+      # Section 24
       - title: 24. FastAPI w/ Diff. Privacy
         path: guides/comprehensive-fastapi-guide#24-fastapi-with-differential-privacy
+      - title: 24.1 Implementing Differential Privacy
+        path: fastapi/privacy/differential-privacy
+      # Section 25
       - title: 25. Pydantic Static Typing
         path: guides/comprehensive-fastapi-guide#25-pydantic-with-static-type-checking
+      - title: 25.1 Static Type Checking for Pydantic
+        path: pydantic/type-checking/static-analysis
   - title: Guides
     children:
       - title: Getting Started
         path: guides/getting-started
       - title: Advanced Topics
         path: guides/advanced-topics
-  - title: API Fundamentals
-    children:
-      - title: What is an API?
-        path: api-fundamentals/what-is-an-api
-      - title: Types of APIs
-        path: api-fundamentals/types-of-apis
-      - title: REST API Principles
-        path: api-fundamentals/rest-api-principles
   - title: Python
     children:
       - title: Basic
@@ -102,43 +293,43 @@ nav:
   - title: FastAPI
     children:
       - title: Introduction
-        path: fastapi/introduction/index # Link to the new index
+        path: fastapi/introduction/index
       - title: Core Concepts
-        path: fastapi/core-concepts/index # Link to the new index
-      - title: Performance & Optimization
-        path: fastapi/performance/index # Link to the new index
+        path: fastapi/core-concepts/index
       - title: Advanced Features
         path: fastapi/advanced-features/index
       - title: Pro-Level Features
-        path: fastapi/pro # Placeholder
-      - title: Hidden Gems
-        path: fastapi/hidden-gems # Placeholder
+        path: fastapi/pro
+      - title: Performance & Optimization
+        path: fastapi/performance/index
       - title: Security
-        path: fastapi/security/overview # Placeholder
+        path: fastapi/security/overview
+      - title: Hidden Gems
+        path: fastapi/hidden-gems
   - title: SQLAlchemy
     children:
       - title: Introduction
-        path: sqlalchemy/introduction/index # Link to the new index
+        path: sqlalchemy/introduction/index
       - title: FastAPI Integration
         path: sqlalchemy/fastapi-integration/index
       - title: Pydantic Integration
         path: sqlalchemy/pydantic-integration/index
+      - title: Modeling
+        path: sqlalchemy/modeling/index
       - title: Advanced Techniques
         path: sqlalchemy/advanced-techniques/index
       - title: Performance & Optimization
-        path: sqlalchemy/performance/sqlalchemy-performance # Direct link to performance page for now
-      - title: Modeling
-        path: sqlalchemy/modeling/index
+        path: sqlalchemy/performance/sqlalchemy-performance
       - title: Advanced Patterns
         path: sqlalchemy/advanced-patterns/index
-      - title: Hidden Gems
-        path: sqlalchemy/hidden-gems # Placeholder
-      - title: Migrations
-        path: sqlalchemy/migrations/index
       - title: Async
         path: sqlalchemy/async/index
+      - title: Migrations
+        path: sqlalchemy/migrations/index
       - title: Best Practices
         path: sqlalchemy/best-practices/index
+      - title: Hidden Gems
+        path: sqlalchemy/hidden-gems
   - title: Pydantic
     children:
       - title: Basic
@@ -146,13 +337,13 @@ nav:
       - title: Intermediate
         path: pydantic/intermediate
       - title: Advanced Features
-        path: pydantic/advanced-features/index # Link to new index
+        path: pydantic/advanced-features/index
       - title: Pro
-        path: pydantic/pro # Placeholder
-      - title: Hidden Gems
-        path: pydantic/hidden-gems # Placeholder
+        path: pydantic/pro
       - title: Type Checking
         path: pydantic/type-checking/index
+      - title: Hidden Gems
+        path: pydantic/hidden-gems
   - title: PostgreSQL
     children:
       - title: Basic
@@ -237,30 +428,6 @@ nav:
         path: css/pro
       - title: Hidden Gems
         path: css/hidden-gems
-  - title: More Topics # Placeholder group for future single-page topics
-    children:
-      - title: API Versioning
-        path: api-versioning/index
-      - title: AI/ML Integration
-        path: ai-ml-integration/index
-      - title: Serverless Optimizations
-        path: serverless-optimizations/index
-      - title: Advanced Documentation
-        path: advanced-documentation/index
-      - title: Data Streaming
-        path: data-streaming/index
-      - title: FastAPI w/ Rust
-        path: fastapi-with-rust/index
-      - title: SQLAlchemy w/ Data Lakes
-        path: sqlalchemy-with-datalakes/index
-      - title: Pydantic w/ Schema Registry
-        path: pydantic-with-schema-registry/index
-      - title: Async GraphQL Subs
-        path: async-graphql-subscriptions/index
-      - title: FastAPI Edge Computing
-        path: fastapi-edge-computing/index
-      - title: FastAPI Privacy
-        path: fastapi/privacy/index
 
 theme:
   default: system # can be light, dark, or system
@@ -269,5 +436,3 @@ theme:
     - dark
 search:
   enabled: true
-
-```

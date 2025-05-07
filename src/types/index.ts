@@ -35,14 +35,13 @@ export interface SiteConfig {
 export interface MarkdownDocument {
   slug: string;
   title: string;
-  contentHtml: string;
-  rawContent: string; // For search indexing
+  // contentHtml: string; // Replaced with raw content
+  rawContent: string; // Store the raw markdown content
   frontmatter: { [key: string]: any };
 }
 
 export interface SearchDoc {
   slug: string;
   title: string;
-  content: string;
+  content: string; // Raw content used for search index
 }
-```

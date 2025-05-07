@@ -10,8 +10,8 @@ export default async function NotFoundPage() {
   // Fetch search docs even for 404 page if search is part of the global layout
   const searchDocs: SearchDoc[] = await getAllMarkdownDocumentsForSearch();
 
-  return (
-    <Layout config={config} document={null} searchDocs={searchDocs}>
+  // The content for the 404 page itself
+  const NotFoundContent = (
       <div className="flex flex-col items-center justify-center text-center py-20">
         <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
         <h2 className="text-3xl font-semibold mb-6">Page Not Found</h2>
@@ -22,6 +22,12 @@ export default async function NotFoundPage() {
           <Link href="/">Go back to Homepage</Link>
         </Button>
       </div>
+  );
+
+  // Render the Layout, passing null for the document, but include the 404 content as children
+  return (
+    <Layout config={config} document={null} searchDocs={searchDocs}>
+      {NotFoundContent}
     </Layout>
   );
 }

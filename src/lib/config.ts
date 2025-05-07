@@ -3,33 +3,40 @@ import path from 'path';
 import yaml from 'js-yaml';
 import type { SiteConfig, NavItemConfig } from '@/types';
 
-const configPath = path.join(process.cwd(), 'public', 'config.yml');
+const configFilePath = path.join(process.cwd(), 'public', 'config.yml');
 
+// Singleton pattern for config cache
 let configCache: SiteConfig | null = null;
+let loadError: Error | null = null;
 
 // Helper function to normalize nav paths to be slug-like
 const normalizeNavPaths = (navItems: NavItemConfig[]): NavItemConfig[] => {
   return navItems.map(item => {
     const newItem = { ...item };
     if (newItem.path && typeof newItem.path === 'string' && !newItem.path.startsWith('http')) {
-      let slug = newItem.path.replace(/\.md$/, ''); // Remove .md extension
-      slug = slug.replace(/^\/+|\/+$/g, '');     // Remove leading/trailing slashes
-      slug = slug.replace(/\\/g, '/');           // Normalize to forward slashes
+      // Handle anchor links - keep them as they are attached to a slug
+      const parts = newItem.path.split('#');
+      let slug = parts[0];
+      const anchor = parts.length > 1 ? `#${parts[1]}` : '';
 
-      // If it's an index file (e.g., "foo/index" or "index"), convert to directory slug or root "index"
-      // Handle anchor links by keeping them as is for paths
-      if (!slug.includes('#')) {
-        if (path.basename(slug).toLowerCase() === 'index') {
-          slug = path.dirname(slug);
-          if (slug === '.' || slug === '') { // handles "index" or "/index" becoming "." or ""
-            slug = 'index';
-          }
-        } else if (slug === '') { // handles "/" or an empty path becoming ""
-          slug = 'index';
-        }
+      // Normalize slug part
+      slug = slug.replace(/\.md$/, ''); // Remove .md extension
+      slug = slug.replace(/\\/g, '/'); // Normalize to forward slashes
+      slug = slug.replace(/^\/+|\/+$/g, ''); // Remove leading/trailing slashes
+
+      // Convert directory index files ('folder/index') to directory slugs ('folder')
+      // Convert root index file ('index') to 'index' slug
+      if (slug.endsWith('/index')) {
+        slug = slug.substring(0, slug.length - '/index'.length);
       }
       
-      newItem.path = slug;
+      // Handle root case explicitly - empty string after processing should be 'index'
+      if (slug === '' || slug === '/') {
+          slug = 'index';
+      }
+      
+      // Re-attach anchor if it exists
+      newItem.path = slug + anchor; 
     }
     if (newItem.children) {
       newItem.children = normalizeNavPaths(newItem.children); // Recurse
@@ -38,14 +45,44 @@ const normalizeNavPaths = (navItems: NavItemConfig[]): NavItemConfig[] => {
   });
 };
 
+// Default configuration in case of loading errors
+const getDefaultConfig = (): SiteConfig => ({
+  site_name: "DevDocs++ (Error)",
+  site_description: "Error loading configuration.",
+  site_author: "",
+  site_url: "",
+  repo_name: "",
+  repo_url: "",
+  edit_uri: "",
+  copyright: `© ${new Date().getFullYear()} DevDocs++`,
+  logo_path: "",
+  favicon_path: "",
+  nav: [{ title: "Home", path: "index" }],
+  theme: { default: "system", options: ["light", "dark"] },
+  search: { enabled: false },
+});
 
 export function loadConfig(): SiteConfig {
+  // Return cached version in production if already loaded successfully
   if (process.env.NODE_ENV === 'production' && configCache) {
     return configCache;
   }
+  // Return default if a previous load attempt failed permanently
+  if (loadError) {
+      console.error("Returning default config due to previous load error.");
+      return getDefaultConfig();
+  }
+
   try {
-    const fileContents = fs.readFileSync(configPath, 'utf8');
-    const rawConfig = yaml.load(fileContents) as any; 
+    if (!fs.existsSync(configFilePath)) {
+      throw new Error(`Configuration file not found at: ${configFilePath}`);
+    }
+    const fileContents = fs.readFileSync(configFilePath, 'utf8');
+    const rawConfig = yaml.load(fileContents) as any; // Use 'any' for flexibility, validate below
+
+    if (!rawConfig || typeof rawConfig !== 'object') {
+      throw new Error("Configuration file is empty or invalid.");
+    }
 
     const config: SiteConfig = {
       // Site Info
@@ -59,45 +96,36 @@ export function loadConfig(): SiteConfig {
       edit_uri: rawConfig.edit_uri || "",
       // Copyright
       copyright: rawConfig.copyright || `© ${new Date().getFullYear()} DevDocs++`,
-      // Logo/Favicon (paths only)
-      logo_path: rawConfig.logo || "",
-      favicon_path: rawConfig.favicon || "",
-      // Navigation
+      // Assets (Paths) - ensure they are strings or empty strings
+      logo_path: typeof rawConfig.logo === 'string' ? rawConfig.logo : "",
+      favicon_path: typeof rawConfig.favicon === 'string' ? rawConfig.favicon : "",
+      // Navigation - ensure it's an array
       nav: Array.isArray(rawConfig.nav) ? rawConfig.nav : [],
-      // Theme
+      // Theme - ensure structure and defaults
       theme: {
         default: rawConfig.theme?.default || "system",
-        options: Array.isArray(rawConfig.theme?.options) ? rawConfig.theme.options : ["light", "dark", "system"],
+        options: Array.isArray(rawConfig.theme?.options) ? rawConfig.theme.options : ["light", "dark"],
       },
-      // Search
+      // Search - ensure structure and default
       search: {
         enabled: typeof rawConfig.search?.enabled === 'boolean' ? rawConfig.search.enabled : true,
       },
     };
     
+    // Normalize navigation paths after validation
     config.nav = normalizeNavPaths(config.nav);
 
+    // Cache the successfully loaded and parsed config in production
     if (process.env.NODE_ENV === 'production') {
       configCache = config;
     }
+    loadError = null; // Reset error on successful load
     return config;
-  } catch (error) {
-    console.error("Error loading or parsing config.yml:", error);
+  } catch (error: unknown) {
+    // Log the error and store it to prevent repeated load attempts
+    loadError = error instanceof Error ? error : new Error(String(error));
+    console.error("Error loading or parsing config.yml:", loadError.message);
     // Provide a default fallback configuration
-    return {
-      site_name: "DevDocs++ (Error)",
-      site_description: "Error loading configuration.",
-      site_author: "",
-      site_url: "",
-      repo_name: "",
-      repo_url: "",
-      edit_uri: "",
-      copyright: `© ${new Date().getFullYear()} DevDocs++`,
-      logo_path: "",
-      favicon_path: "",
-      nav: [{ title: "Home", path: "index" }],
-      theme: { default: "system", options: ["light", "dark"] },
-      search: { enabled: false },
-    };
+    return getDefaultConfig();
   }
 }
