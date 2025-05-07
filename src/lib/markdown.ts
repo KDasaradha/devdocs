@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -50,12 +49,15 @@ export async function getMarkdownContentBySlug(slug: string): Promise<MarkdownDo
 
   let filePath: string | undefined;
   let fileContents: string | undefined;
+  let sourceFilePath: string | undefined; // Store the path relative to docsDirectory
 
   for (const p of uniquePotentialPaths) {
     try {
       if (fs.existsSync(p) && fs.statSync(p).isFile()) {
         filePath = p;
         fileContents = fs.readFileSync(filePath, 'utf8');
+        // Store the path relative to the docs directory
+        sourceFilePath = path.relative(docsDirectory, filePath).replace(/\\/g, '/');
         break; 
       }
     } catch (error) {
@@ -87,13 +89,14 @@ export async function getMarkdownContentBySlug(slug: string): Promise<MarkdownDo
       .use(rehypeRaw) 
       .use(rehypeSlug) 
       .use(rehypeAutolinkHeadings, { 
-        behavior: 'prepend', // Changed from 'wrap' to 'prepend'
+        behavior: 'wrap', // Changed back to wrap as prepend caused nested <a>
         properties: {
           className: ['anchor'], 
           'aria-hidden': 'true',
           tabIndex: -1,
         },
-        content: { type: 'text', value: '#' } // Added content for the link
+        // Removed explicit content, let default '#' be used by plugin
+        // content: { type: 'text', value: '#' } 
       })
       .use(rehypePrism, { showLineNumbers: false, ignoreMissing: true }) 
       .use(rehypeStringify) 
@@ -121,12 +124,15 @@ export async function getMarkdownContentBySlug(slug: string): Promise<MarkdownDo
     }
   }
 
+  // Include the sourceFilePath in the frontmatter
+  const finalFrontmatter = { ...frontmatter, sourceFilePath };
+
   return {
     slug: normalizedSlug, 
     title: title,
     contentHtml: contentHtml,
     rawContent: rawMarkdownContent,
-    frontmatter: frontmatter || {},
+    frontmatter: finalFrontmatter,
   };
 }
 

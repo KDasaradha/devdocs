@@ -37,7 +37,10 @@ export interface MarkdownDocument {
   title: string;
   contentHtml: string; // Keep contentHtml for rendering
   rawContent: string; // Store the raw markdown content for search/edit links
-  frontmatter: { [key: string]: any };
+  frontmatter: { 
+    [key: string]: any;
+    sourceFilePath?: string; // Optional: Store the original file path relative to content/docs
+  }; 
 }
 
 export interface SearchDoc {
@@ -45,4 +48,3 @@ export interface SearchDoc {
   title: string;
   content: string; // Raw content used for search index
 }
-

@@ -3,51 +3,45 @@ import { Sidebar } from './sidebar';
 import { PageTitle } from '@/components/content/page-title';
 import { MarkdownRenderer } from '@/components/content/markdown-renderer';
 import { SearchProvider } from '@/components/search/search-provider';
-import type { SiteConfig, MarkdownDocument, SearchDoc } from '@/types';
+import type { SiteConfig, MarkdownDocument } from '@/types'; // Removed SearchDoc import
 import { getPrevNextPages, getNavLinkHref } from '@/lib/navigation';
 import { PageNavigation } from '@/components/navigation/page-navigation';
-import path from 'path'; // Import path for edit URL construction
+import path from 'path'; 
+import fs from 'fs';
+import { cn } from '@/lib/utils'; // Import cn utility
 
 interface LayoutProps {
   config: SiteConfig;
-  document: MarkdownDocument | null; // Document can be null (e.g., for 404 page)
-  searchDocs: SearchDoc[];
-  children?: React.ReactNode; // Accept children for custom content (like 404 page)
+  document: MarkdownDocument | null; 
+  children?: React.ReactNode; 
 }
 
-export function Layout({ config, document, searchDocs, children }: LayoutProps) {
+export function Layout({ config, document, children }: LayoutProps) {
   const { site_name, nav, copyright, repo_url, edit_uri } = config;
-  // Use empty string if document is null, handle in getPrevNextPages
   const currentSlug = document?.slug || ''; 
 
   const { prev, next } = getPrevNextPages(currentSlug, nav);
 
-  // Function to generate the "Edit this page" URL
   const getEditUrl = () => {
-    // Ensure all necessary parts are present and document exists
-    if (!repo_url || !edit_uri || !document || !document.slug || document.slug === 'index') return null;
+    if (!repo_url || !edit_uri || !document || !document.slug) return null;
 
-    // Construct the base edit URI, ensuring it ends with a slash if it's a directory path
     const baseEditUri = edit_uri.endsWith('/') ? edit_uri : `${edit_uri}/`;
-
-    // Construct the likely file path relative to the `content/docs` dir in the repo
-    // This relies on the slug matching the file structure.
-    // Need to consider if the slug represents an index file within a folder
-    let relativeFilePath = `${document.slug}.md`;
-    if (document.slug !== 'index' && fs.existsSync(path.join(process.cwd(), 'content/docs', document.slug, 'index.md'))) {
-      // If it's a directory slug with an index file
-      relativeFilePath = `${document.slug}/index.md`;
+    
+    // Prioritize using the actual file path if available from document data
+    // Otherwise, construct based on slug (less reliable for index files)
+    let relativeFilePath = `${document.slug}.md`; 
+    if (document.frontmatter?.sourceFilePath) {
+        // Assuming sourceFilePath is relative to the 'content/docs' root
+        relativeFilePath = document.frontmatter.sourceFilePath; 
+    } else if (fs.existsSync(path.join(process.cwd(), 'content/docs', document.slug, 'index.md'))) {
+         relativeFilePath = `${document.slug}/index.md`;
     } else if (document.slug === 'index' && fs.existsSync(path.join(process.cwd(), 'content/docs', 'index.md'))) {
-       // Explicitly check root index.md
-       relativeFilePath = 'index.md';
+         relativeFilePath = 'index.md';
     } 
     // Add checks for .mdx if needed
-    
-    // A more robust solution might involve storing the original file path during markdown processing
 
-    // Combine parts, ensuring clean path joining
     const cleanRepoUrl = repo_url.replace(/\/$/, '');
-    const cleanBaseEditUri = baseEditUri.replace(/^\//, '').replace(/\/$/, ''); // Remove leading/trailing slashes
+    const cleanBaseEditUri = baseEditUri.replace(/^\//, '').replace(/\/$/, ''); 
     const cleanRelativeFilePath = relativeFilePath.replace(/^\//, '');
 
     return `${cleanRepoUrl}/${cleanBaseEditUri}/${cleanRelativeFilePath}`;
@@ -56,19 +50,22 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
   const editUrl = getEditUrl();
 
   return (
-    <SearchProvider searchDocs={searchDocs}>
+    // SearchProvider now fetches its own data
+    <SearchProvider> 
       <div className="min-h-screen flex flex-col bg-background">
         <Header siteName={site_name} navItems={nav} />
         <div className="flex-1 container mx-auto px-4 md:px-8 max-w-screen-2xl">
           <div className="flex flex-col md:flex-row">
             <Sidebar navItems={nav} />
-            <main className="flex-1 md:pl-52 lg:pl-56 py-8 w-full overflow-x-hidden">
-              <article className="prose dark:prose-invert max-w-4xl mx-auto w-full group">
+            {/* Adjusted padding/width for main content area, added animation class */}
+            <main className={cn(
+              "flex-1 md:pl-52 py-8 w-full overflow-x-hidden max-w-none", // Adjusted padding left
+              "animate-fade-in" // Added animation class
+             )}>
+              <article className="prose dark:prose-invert max-w-4xl mx-auto w-full group"> {/* Increased max-width slightly */}
                 {document ? (
-                  // Render document content if available
                   <>
                     <PageTitle title={document.title} />
-                    {/* Ensure markdownContent prop receives contentHtml and it exists */}
                     {document.contentHtml ? (
                       <MarkdownRenderer markdownContent={document.contentHtml} />
                     ) : (
@@ -80,7 +77,7 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
                           href={editUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                          className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150" // Added duration
                         >
                           Edit this page on GitHub
                         </a>
@@ -89,7 +86,6 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
                     <PageNavigation prevPage={prev} nextPage={next} />
                   </>
                 ) : (
-                  // Render explicitly passed children (e.g., the 404 content) if document is null
                   children
                 )}
               </article>
@@ -106,7 +102,7 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
                 href={config.repo_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150" // Added duration
               >
                 View on GitHub
               </a>
@@ -117,6 +113,3 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
     </SearchProvider>
   );
 }
-
-// Need to import fs for existsSync check in getEditUrl
-import fs from 'fs';
