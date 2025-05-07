@@ -24,8 +24,6 @@ const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
-  // The Header provides the flex context if needed, especially if you have more elements
-  // alongside the Trigger, though often the Trigger itself is the main flex item.
   <AccordionPrimitive.Header className="flex"> 
     <AccordionPrimitive.Trigger
       ref={ref}
@@ -35,23 +33,21 @@ const AccordionTrigger = React.forwardRef<
         // Hover and focus styles
         "hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm",
         // Data state for open/closed styling (e.g., rotating the icon)
-        "[&[data-state=open]>svg]:rotate-180",
+        // Removed the explicit icon rotation here; let the parent component handle icon state if needed
+        // "[&[data-state=open]>svg]:rotate-180", 
         className // Allow external classes to override/extend
       )}
       {...props} // Spread remaining props, including potential 'asChild'
     >
       {/* Render children passed to AccordionTrigger */}
+      {/* When asChild is true, this expects a SINGLE React Element child */}
       {children} 
       
-      {/* Conditionally render the ChevronDown icon */}
-      {/* Render ONLY if 'asChild' is NOT used, OR if 'asChild' IS used but the single child element 
-          passed to it does NOT inherently contain its own icon/chevron indicator. */}
-      {/* Since we often pass complex children like divs or links when using asChild,
-          we generally rely on the CHILD element to include the chevron if needed.
-          So, the simple check here is: if NOT using asChild, render the default chevron. */}
-      {!props.asChild && (
+      {/* REMOVED the default ChevronDown icon rendering. */}
+      {/* The component using AccordionTrigger with `asChild` (like NavItem) is now responsible for rendering its own indicator icon (e.g., ChevronDown) inside the child element it passes. */}
+      {/* {!props.asChild && (
            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
-      )}
+      )} */}
     </AccordionPrimitive.Trigger>
   </AccordionPrimitive.Header>
 ))
@@ -73,7 +69,8 @@ const AccordionContent = React.forwardRef<
     {...props}
   >
     {/* Add padding within the content area */}
-    <div className={cn("pb-4 pt-0", className)}>{children}</div> 
+    {/* Changed pb-4 pt-0 to just apply className if needed, padding handled by consumer */}
+    <div className={cn("pt-0 pb-4", className)}>{children}</div> 
   </AccordionPrimitive.Content>
 ))
 

@@ -512,14 +512,14 @@ This document provides a detailed exploration of FastAPI, SQLAlchemy, Pydantic, 
 - **Questions**:
   - Write Pydantic models for a nested JSON structure (e.g., an order with multiple line items).
   - How does Pydantic handle validation for lists of nested models?
-  - Explain how to use forward references (`"TypeName"`) for circular dependencies in Pydantic models.
+  - Explain how to use forward references (`\"TypeName\"`) for circular dependencies in Pydantic models.
 
 ### 8.4 Serialization Customization
 - **Description**: Customizing data serialization (`.model_dump()`, `.model_dump_json()`) using parameters like `include`, `exclude`, `by_alias`, and computed fields (`@computed_field`).
 - **Path to detailed notes**: `content/docs/pydantic/advanced-features/serialization.md`
 - **Questions**:
   - How do you exclude specific fields during Pydantic model serialization?
-  - Explain the use of `by_alias=True` in `model_dump()` or `json()`.
+  - Explain the use of `by_alias=True` in `model_dump()` or `json()`.\
   - Create a Pydantic model with a `@computed_field` and demonstrate its serialization.
 
 ### 8.5 Generic Models
@@ -585,7 +585,7 @@ This document provides a detailed exploration of FastAPI, SQLAlchemy, Pydantic, 
 ### 10.1 Third-Party Integrations
 - **Description**: Integrating FastAPI with other services and tools like Celery for background tasks, Kafka for message queues, and external APIs using `httpx`.
 - **Path to detailed notes**: `content/docs/integrations-and-architectures/third-party-integrations.md`
-- **Questions**:
+- **Questions**:\
     - How do you integrate Celery with FastAPI for background task processing?
     - Provide an example of using `httpx` to call an external API from a FastAPI endpoint.
     - What are the considerations when integrating Kafka with FastAPI for event-driven architectures?
@@ -708,7 +708,7 @@ This document provides a detailed exploration of FastAPI, SQLAlchemy, Pydantic, 
 - **Description**: Techniques for optimizing FastAPI applications for serverless platforms like AWS Lambda, focusing on cold starts and resource limits using adapters like Mangum.
 - **Path to detailed notes**: `content/docs/serverless-optimizations/optimizing-for-serverless.md`
 - **Questions**:
-  - What are "cold starts" in serverless functions, and how can they be minimized for FastAPI apps?
+  - What are \"cold starts\" in serverless functions, and how can they be minimized for FastAPI apps?
   - How does an adapter like Mangum help in deploying FastAPI to AWS Lambda?
   - Discuss resource management (memory, execution time) for FastAPI on serverless.
 
@@ -811,4 +811,3 @@ This document provides a detailed exploration of FastAPI, SQLAlchemy, Pydantic, 
   - How does Mypy interact with Pydantic models for static type analysis?
   - What are common type-checking challenges when using Pydantic, and how can they be addressed?
   - How can Pydantic plugins for type checkers enhance the development experience?
-
