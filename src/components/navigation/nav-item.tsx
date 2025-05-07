@@ -17,19 +17,24 @@ export function NavItem({ item, depth = 0 }: NavItemProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-  const isActive = item.path ? pathname === item.path || (item.path === '/' && pathname.startsWith('/index')) || pathname === item.path + '/index' : false;
+  // Normalize item.path to always start with a slash if it exists, and handle 'index' case
+  const normalizedItemPath = item.path 
+    ? (item.path === 'index' || item.path === '/' ? '/' : `/${item.path.replace(/^\//, '')}`) 
+    : null;
+
+  const isActive = normalizedItemPath ? pathname === normalizedItemPath : false;
   
   // Determine if any child is active to keep parent accordion open
   const isChildActive = item.children ? item.children.some(child => {
-    const childPath = child.path || '';
-    return pathname === childPath || (childPath === '/' && pathname.startsWith('/index')) || pathname === childPath + '/index' || pathname.startsWith(childPath + '/');
+    const normalizedChildPath = child.path 
+      ? (child.path === 'index' || child.path === '/' ? '/' : `/${child.path.replace(/^\//, '')}`)
+      : null;
+    return normalizedChildPath ? pathname === normalizedChildPath || pathname.startsWith(`${normalizedChildPath}/`) : false;
   }) : false;
 
   useEffect(() => {
-    if (isChildActive) {
-      setIsOpen(true);
-    }
-  }, [isChildActive, pathname]);
+    setIsOpen(isChildActive || isActive);
+  }, [isChildActive, isActive, pathname]); // Added pathname to ensure re-evaluation on route change
 
 
   const itemIndentClass = `pl-${depth * 4}`;
@@ -42,6 +47,7 @@ export function NavItem({ item, depth = 0 }: NavItemProps) {
             className={cn(
               "py-2 px-3 w-full text-left hover:bg-muted/50 rounded-md flex justify-between items-center",
               itemIndentClass,
+              // An accordion trigger (parent) is active if itself is the target or one of its children is
               (isActive || isChildActive) && "font-semibold text-primary"
             )}
           >
@@ -63,7 +69,7 @@ export function NavItem({ item, depth = 0 }: NavItemProps) {
     );
   }
 
-  if (!item.path) {
+  if (!normalizedItemPath) {
     return (
       <span className={cn("block py-2 px-3 text-muted-foreground", itemIndentClass)}>
         {item.title}
@@ -71,11 +77,9 @@ export function NavItem({ item, depth = 0 }: NavItemProps) {
     );
   }
   
-  const linkPath = item.path === '/' ? '/' : `/${item.path.replace(/^\//, '')}`;
-
   return (
     <Link
-      href={linkPath}
+      href={normalizedItemPath}
       className={cn(
         "flex items-center gap-2 py-2 px-3 hover:bg-muted/50 rounded-md transition-colors duration-150",
         itemIndentClass,
@@ -87,3 +91,4 @@ export function NavItem({ item, depth = 0 }: NavItemProps) {
     </Link>
   );
 }
+
