@@ -11,7 +11,15 @@ nav:
       - title: Advanced Topics
         path: guides/advanced-topics
       - title: Comprehensive FastAPI Guide
-        path: guides/comprehensive-fastapi-guide
+        path: guides/comprehensive-fastapi-guide # This will be the index
+  - title: API Fundamentals
+    children:
+      - title: What is an API?
+        path: guides/api-fundamentals/what-is-an-api
+      - title: Types of APIs
+        path: api-fundamentals/types-of-apis
+      - title: REST API Principles
+        path: api-fundamentals/rest-api-principles
   - title: Python
     children:
       - title: Basic
@@ -26,40 +34,46 @@ nav:
         path: python/hidden-gems
   - title: FastAPI
     children:
-      - title: Basic
-        path: fastapi/basic
-      - title: Intermediate
-        path: fastapi/intermediate
-      - title: Advanced
-        path: fastapi/advanced
-      - title: Pro
-        path: fastapi/pro
-      - title: Hidden Gems
-        path: fastapi/hidden-gems
+      - title: Introduction
+        path: fastapi/introduction/index # Link to the new index
+      - title: Core Concepts
+        path: fastapi/core-concepts/index # Link to the new index
+      - title: Advanced Features (Placeholder)
+        path: fastapi/advanced # Placeholder, to be expanded
+      - title: Pro-Level (Placeholder)
+        path: fastapi/pro # Placeholder
+      - title: Hidden Gems (Placeholder)
+        path: fastapi/hidden-gems # Placeholder
+      - title: Security (Placeholder)
+        path: fastapi/security/overview # Placeholder
   - title: SQLAlchemy
     children:
-      - title: Basic
-        path: sqlalchemy/basic
-      - title: Intermediate
-        path: sqlalchemy/intermediate
-      - title: Advanced
-        path: sqlalchemy/advanced
-      - title: Pro
-        path: sqlalchemy/pro
-      - title: Hidden Gems
-        path: sqlalchemy/hidden-gems
+      - title: Introduction
+        path: sqlalchemy/introduction/index # Link to the new index
+      - title: FastAPI Integration
+        path: sqlalchemy/fastapi-integration/index
+      - title: Pydantic Integration
+        path: sqlalchemy/pydantic-integration/index
+      - title: Modeling (Placeholder)
+        path: sqlalchemy/modeling/table-creation-methods # Example, to be expanded
+      - title: Advanced (Placeholder)
+        path: sqlalchemy/advanced # Placeholder
+      - title: Pro (Placeholder)
+        path: sqlalchemy/pro # Placeholder
+      - title: Hidden Gems (Placeholder)
+        path: sqlalchemy/hidden-gems # Placeholder
   - title: Pydantic
     children:
       - title: Basic
         path: pydantic/basic
       - title: Intermediate
         path: pydantic/intermediate
-      - title: Advanced
-        path: pydantic/advanced
-      - title: Pro
-        path: pydantic/pro
-      - title: Hidden Gems
-        path: pydantic/hidden-gems
+      - title: Advanced Features
+        path: pydantic/advanced-features/index # Link to new index
+      - title: Pro (Placeholder)
+        path: pydantic/pro # Placeholder
+      - title: Hidden Gems (Placeholder)
+        path: pydantic/hidden-gems # Placeholder
   - title: PostgreSQL
     children:
       - title: Basic
@@ -151,4 +165,3 @@ theme:
     - dark
 search:
   enabled: true
-
