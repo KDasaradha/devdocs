@@ -17,13 +17,16 @@ const normalizeNavPaths = (navItems: NavItemConfig[]): NavItemConfig[] => {
       slug = slug.replace(/\\/g, '/');           // Normalize to forward slashes
 
       // If it's an index file (e.g., "foo/index" or "index"), convert to directory slug or root "index"
-      if (path.basename(slug).toLowerCase() === 'index') {
-        slug = path.dirname(slug);
-        if (slug === '.' || slug === '') { // handles "index" or "/index" becoming "." or ""
+      // Handle anchor links by keeping them as is for paths
+      if (!slug.includes('#')) {
+        if (path.basename(slug).toLowerCase() === 'index') {
+          slug = path.dirname(slug);
+          if (slug === '.' || slug === '') { // handles "index" or "/index" becoming "." or ""
+            slug = 'index';
+          }
+        } else if (slug === '') { // handles "/" or an empty path becoming ""
           slug = 'index';
         }
-      } else if (slug === '') { // handles "/" or an empty path becoming ""
-        slug = 'index';
       }
       
       newItem.path = slug;
@@ -45,12 +48,28 @@ export function loadConfig(): SiteConfig {
     const rawConfig = yaml.load(fileContents) as any; 
 
     const config: SiteConfig = {
+      // Site Info
       site_name: rawConfig.site_name || "DevDocs++",
+      site_description: rawConfig.site_description || "A documentation site.",
+      site_author: rawConfig.site_author || "",
+      site_url: rawConfig.site_url || "",
+      // Repo Info
+      repo_name: rawConfig.repo_name || "",
+      repo_url: rawConfig.repo_url || "",
+      edit_uri: rawConfig.edit_uri || "",
+      // Copyright
+      copyright: rawConfig.copyright || `© ${new Date().getFullYear()} DevDocs++`,
+      // Logo/Favicon (paths only)
+      logo_path: rawConfig.logo || "",
+      favicon_path: rawConfig.favicon || "",
+      // Navigation
       nav: Array.isArray(rawConfig.nav) ? rawConfig.nav : [],
+      // Theme
       theme: {
         default: rawConfig.theme?.default || "system",
         options: Array.isArray(rawConfig.theme?.options) ? rawConfig.theme.options : ["light", "dark", "system"],
       },
+      // Search
       search: {
         enabled: typeof rawConfig.search?.enabled === 'boolean' ? rawConfig.search.enabled : true,
       },
@@ -67,9 +86,19 @@ export function loadConfig(): SiteConfig {
     // Provide a default fallback configuration
     return {
       site_name: "DevDocs++ (Error)",
+      site_description: "Error loading configuration.",
+      site_author: "",
+      site_url: "",
+      repo_name: "",
+      repo_url: "",
+      edit_uri: "",
+      copyright: `© ${new Date().getFullYear()} DevDocs++`,
+      logo_path: "",
+      favicon_path: "",
       nav: [{ title: "Home", path: "index" }],
       theme: { default: "system", options: ["light", "dark"] },
       search: { enabled: false },
     };
   }
 }
+```

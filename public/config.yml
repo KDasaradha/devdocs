@@ -1,5 +1,20 @@
+# Project Information
+site_name: Comprehensive Technology Documentation
+site_description: A unified guide covering FastAPI, Application Architecture, DevOps, DevSecOps, CI/CD, and related software engineering practices.
+site_author: KDasaradha525
+site_url: https://night-fury.onrender.com/
 
-site_name: DevDocs++
+# Repository Information
+repo_name: KDasaradha/my-tutorials
+repo_url: https://github.com/KDasaradha/my-tutorials.git
+edit_uri: blob/main/docs/
+
+# Copyright Information
+copyright: "© 2025 KDasaradha525. All rights reserved."
+# Note: Logo and Favicon are added here, but the application currently doesn't implement them.
+# logo: assets/toothless_logo.jpg
+# favicon: assets/toothless_icon.ico
+
 nav:
   - title: Home
     path: index
@@ -30,7 +45,7 @@ nav:
         path: guides/comprehensive-fastapi-guide#10-integrations-and-architectures
       - title: 11. Deployment & Testing
         path: guides/comprehensive-fastapi-guide#11-deployment-and-testing
-      - title: 12. FastAPI Pro-Level
+      - title: 12. FastAPI Pro-Level Features
         path: guides/comprehensive-fastapi-guide#12-fastapi-pro-level-features
       - title: 13. API Versioning
         path: guides/comprehensive-fastapi-guide#13-api-versioning-in-fastapi
@@ -92,13 +107,13 @@ nav:
         path: fastapi/core-concepts/index # Link to the new index
       - title: Performance & Optimization
         path: fastapi/performance/index # Link to the new index
-      - title: Advanced Features (Placeholder)
-        path: fastapi/advanced # Placeholder, to be expanded
-      - title: Pro-Level (Placeholder)
+      - title: Advanced Features
+        path: fastapi/advanced-features/index
+      - title: Pro-Level Features
         path: fastapi/pro # Placeholder
-      - title: Hidden Gems (Placeholder)
+      - title: Hidden Gems
         path: fastapi/hidden-gems # Placeholder
-      - title: Security (Placeholder)
+      - title: Security
         path: fastapi/security/overview # Placeholder
   - title: SQLAlchemy
     children:
@@ -112,14 +127,18 @@ nav:
         path: sqlalchemy/advanced-techniques/index
       - title: Performance & Optimization
         path: sqlalchemy/performance/sqlalchemy-performance # Direct link to performance page for now
-      - title: Modeling (Placeholder)
-        path: sqlalchemy/modeling/table-creation-methods # Example, to be expanded
-      - title: Advanced (Placeholder)
-        path: sqlalchemy/advanced # Placeholder
-      - title: Pro (Placeholder)
-        path: sqlalchemy/pro # Placeholder
-      - title: Hidden Gems (Placeholder)
+      - title: Modeling
+        path: sqlalchemy/modeling/index
+      - title: Advanced Patterns
+        path: sqlalchemy/advanced-patterns/index
+      - title: Hidden Gems
         path: sqlalchemy/hidden-gems # Placeholder
+      - title: Migrations
+        path: sqlalchemy/migrations/index
+      - title: Async
+        path: sqlalchemy/async/index
+      - title: Best Practices
+        path: sqlalchemy/best-practices/index
   - title: Pydantic
     children:
       - title: Basic
@@ -128,10 +147,12 @@ nav:
         path: pydantic/intermediate
       - title: Advanced Features
         path: pydantic/advanced-features/index # Link to new index
-      - title: Pro (Placeholder)
+      - title: Pro
         path: pydantic/pro # Placeholder
-      - title: Hidden Gems (Placeholder)
+      - title: Hidden Gems
         path: pydantic/hidden-gems # Placeholder
+      - title: Type Checking
+        path: pydantic/type-checking/index
   - title: PostgreSQL
     children:
       - title: Basic
@@ -216,6 +237,31 @@ nav:
         path: css/pro
       - title: Hidden Gems
         path: css/hidden-gems
+  - title: More Topics # Placeholder group for future single-page topics
+    children:
+      - title: API Versioning
+        path: api-versioning/index
+      - title: AI/ML Integration
+        path: ai-ml-integration/index
+      - title: Serverless Optimizations
+        path: serverless-optimizations/index
+      - title: Advanced Documentation
+        path: advanced-documentation/index
+      - title: Data Streaming
+        path: data-streaming/index
+      - title: FastAPI w/ Rust
+        path: fastapi-with-rust/index
+      - title: SQLAlchemy w/ Data Lakes
+        path: sqlalchemy-with-datalakes/index
+      - title: Pydantic w/ Schema Registry
+        path: pydantic-with-schema-registry/index
+      - title: Async GraphQL Subs
+        path: async-graphql-subscriptions/index
+      - title: FastAPI Edge Computing
+        path: fastapi-edge-computing/index
+      - title: FastAPI Privacy
+        path: fastapi/privacy/index
+
 theme:
   default: system # can be light, dark, or system
   options:
@@ -223,3 +269,5 @@ theme:
     - dark
 search:
   enabled: true
+
+```

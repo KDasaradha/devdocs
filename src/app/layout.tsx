@@ -1,14 +1,32 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { inter, firaCode } from '@/lib/fonts';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { loadConfig } from '@/lib/config';
+import { SiteConfig } from '@/types';
+
+const config: SiteConfig = loadConfig();
 
 export const metadata: Metadata = {
-  title: 'DevDocs++ | Modern Documentation Platform',
-  description: 'Clean, readable, and customizable documentation for developers.',
+  title: {
+    default: config.site_name,
+    template: `%s | ${config.site_name}`,
+  },
+  description: config.site_description,
+  authors: config.site_author ? [{ name: config.site_author }] : [],
+  // Add icons configuration if favicon_path is set
+  ...(config.favicon_path ? { icons: { icon: config.favicon_path } } : {}),
 };
+
+// Optional: Configure viewport settings
+// export const viewport: Viewport = {
+//   themeColor: [
+//     { media: '(prefers-color-scheme: light)', color: 'white' },
+//     { media: '(prefers-color-scheme: dark)', color: 'black' },
+//   ],
+// }
 
 export default function RootLayout({
   children,
@@ -23,7 +41,7 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme={config.theme.default}
           enableSystem
           disableTransitionOnChange
         >
@@ -35,3 +53,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+```
