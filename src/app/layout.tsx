@@ -4,7 +4,7 @@ import { inter, firaCode } from '@/lib/fonts';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { loadConfig } from '@/lib/config';
 import type { SiteConfig } from '@/types';
 
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   description: config.site_description,
   authors: config.site_author ? [{ name: config.site_author }] : [],
-  icons: config.favicon_path 
+  icons: config.favicon_path
     ? [
         { rel: 'icon', url: config.favicon_path, type: 'image/x-icon', sizes: '16x16' },
         // You can add more specific icon links here if needed, e.g., for different sizes or apple-touch-icon
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
     siteName: config.site_name,
     images: config.logo_path ? [
       {
-        url: config.logo_path, 
-        width: 800, 
+        url: config.logo_path,
+        width: 800, // Specify width and height for OG images if possible
         height: 600,
         alt: `${config.site_name} Logo`,
       },
@@ -46,21 +46,22 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: config.site_name,
     description: config.site_description,
-    images: config.logo_path ? [config.logo_path] : [], 
+    images: config.logo_path ? [config.logo_path] : [],
+    // Consider adding twitter:creator or twitter:site if applicable
   },
 };
 
 // Optional: Configure viewport settings
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'hsl(var(--background))' }, 
+    { media: '(prefers-color-scheme: light)', color: 'hsl(var(--background))' },
     { media: '(prefers-color-scheme: dark)', color: 'hsl(var(--background))' },
   ],
   // Add other viewport settings if needed
-  // width: 'device-width',
-  // initialScale: 1,
-  // maximumScale: 1,
-}
+   width: 'device-width',
+   initialScale: 1,
+  // maximumScale: 1, // Often better not to restrict maximum scale for accessibility
+};
 
 export default function RootLayout({
   children,
@@ -70,10 +71,10 @@ export default function RootLayout({
   return (
     // Added suppressHydrationWarning to <html> tag for next-themes compatibility
     <html lang="en" suppressHydrationWarning>
-      <head /> {/* Ensure head is explicitly included */}
-      <body 
+      {/* Removed explicit empty <head /> tag. Next.js handles head content via Metadata API. */}
+      <body
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}
-        // Removed suppressHydrationWarning from body unless specifically needed for body attributes
+        suppressHydrationWarning // Keep this here ONLY if browser extensions are known to cause issues
       >
         <ThemeProvider
           attribute="class"
