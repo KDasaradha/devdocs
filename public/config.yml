@@ -1,21 +1,73 @@
+
 site_name: DevDocs++
 nav:
   - title: Home
     path: index
   - title: About
     path: about
+  - title: Comprehensive Guide # Changed: Made this a parent item
+    path: guides/comprehensive-fastapi-guide # Parent links to the top
+    children:
+      - title: 1. Intro to APIs & FastAPI
+        path: guides/comprehensive-fastapi-guide#1-introduction-to-apis-and-fastapi
+      - title: 2. Core FastAPI Concepts
+        path: guides/comprehensive-fastapi-guide#2-core-fastapi-concepts
+      - title: 3. Database Handling with SQLAlchemy
+        path: guides/comprehensive-fastapi-guide#3-database-handling-with-sqlalchemy
+      - title: 4. Advanced FastAPI Features
+        path: guides/comprehensive-fastapi-guide#4-advanced-fastapi-features
+      - title: 5. FastAPI Security
+        path: guides/comprehensive-fastapi-guide#5-fastapi-security
+      - title: 6. Performance & Optimization
+        path: guides/comprehensive-fastapi-guide#6-performance-and-optimization
+      - title: 7. Advanced SQLAlchemy
+        path: guides/comprehensive-fastapi-guide#7-advanced-sqlalchemy-techniques
+      - title: 8. Pydantic Advanced Features
+        path: guides/comprehensive-fastapi-guide#8-pydantic-advanced-features
+      - title: 9. Async Programming
+        path: guides/comprehensive-fastapi-guide#9-async-programming
+      - title: 10. Integrations & Architectures
+        path: guides/comprehensive-fastapi-guide#10-integrations-and-architectures
+      - title: 11. Deployment & Testing
+        path: guides/comprehensive-fastapi-guide#11-deployment-and-testing
+      - title: 12. FastAPI Pro-Level
+        path: guides/comprehensive-fastapi-guide#12-fastapi-pro-level-features
+      - title: 13. API Versioning
+        path: guides/comprehensive-fastapi-guide#13-api-versioning-in-fastapi
+      - title: 14. AI/ML Integration
+        path: guides/comprehensive-fastapi-guide#14-ai-and-machine-learning-integration
+      - title: 15. Serverless Optimizations
+        path: guides/comprehensive-fastapi-guide#15-serverless-optimizations
+      - title: 16. Advanced Documentation
+        path: guides/comprehensive-fastapi-guide#16-advanced-documentation-practices
+      - title: 17. Data Streaming
+        path: guides/comprehensive-fastapi-guide#17-data-streaming-with-async-generators
+      - title: 18. FastAPI with Rust
+        path: guides/comprehensive-fastapi-guide#18-fastapi-with-rust-extensions
+      - title: 19. SQLAlchemy w/ Data Lakes
+        path: guides/comprehensive-fastapi-guide#19-sqlalchemy-with-data-lakes
+      - title: 20. Pydantic w/ Schema Registry
+        path: guides/comprehensive-fastapi-guide#20-pydantic-with-schema-registry
+      - title: 21. Async GraphQL Subs
+        path: guides/comprehensive-fastapi-guide#21-async-graphql-subscriptions
+      - title: 22. FastAPI Edge Computing
+        path: guides/comprehensive-fastapi-guide#22-fastapi-with-edge-computing
+      - title: 23. Zero-Downtime Migrations
+        path: guides/comprehensive-fastapi-guide#23-zero-downtime-migrations-with-sqlalchemy
+      - title: 24. FastAPI w/ Diff. Privacy
+        path: guides/comprehensive-fastapi-guide#24-fastapi-with-differential-privacy
+      - title: 25. Pydantic Static Typing
+        path: guides/comprehensive-fastapi-guide#25-pydantic-with-static-type-checking
   - title: Guides
     children:
       - title: Getting Started
         path: guides/getting-started
       - title: Advanced Topics
         path: guides/advanced-topics
-      - title: Comprehensive FastAPI Guide
-        path: guides/comprehensive-fastapi-guide # This will be the index
   - title: API Fundamentals
     children:
       - title: What is an API?
-        path: guides/api-fundamentals/what-is-an-api
+        path: api-fundamentals/what-is-an-api
       - title: Types of APIs
         path: api-fundamentals/types-of-apis
       - title: REST API Principles
@@ -38,6 +90,8 @@ nav:
         path: fastapi/introduction/index # Link to the new index
       - title: Core Concepts
         path: fastapi/core-concepts/index # Link to the new index
+      - title: Performance & Optimization
+        path: fastapi/performance/index # Link to the new index
       - title: Advanced Features (Placeholder)
         path: fastapi/advanced # Placeholder, to be expanded
       - title: Pro-Level (Placeholder)
@@ -54,6 +108,10 @@ nav:
         path: sqlalchemy/fastapi-integration/index
       - title: Pydantic Integration
         path: sqlalchemy/pydantic-integration/index
+      - title: Advanced Techniques
+        path: sqlalchemy/advanced-techniques/index
+      - title: Performance & Optimization
+        path: sqlalchemy/performance/sqlalchemy-performance # Direct link to performance page for now
       - title: Modeling (Placeholder)
         path: sqlalchemy/modeling/table-creation-methods # Example, to be expanded
       - title: Advanced (Placeholder)
