@@ -8,17 +8,17 @@ export interface SiteConfig {
   // Site Info
   site_name: string;
   site_description: string;
-  site_author: string;
-  site_url: string;
+  site_author: string; // Added
+  site_url: string; // Added
   // Repo Info
-  repo_name: string;
-  repo_url: string;
+  repo_name: string; // Added
+  repo_url: string; // Added
   edit_uri: string; // Base URI for "Edit this page" links
   // Copyright
   copyright: string;
-  // Assets (Paths)
-  logo_path?: string;
-  favicon_path?: string;
+  // Assets (Paths) - ensure paths start with '/' if they are relative to the public dir
+  logo_path?: string; // Added
+  favicon_path?: string; // Added
   // Navigation
   nav: NavItemConfig[];
   // Theme
@@ -35,8 +35,8 @@ export interface SiteConfig {
 export interface MarkdownDocument {
   slug: string;
   title: string;
-  // contentHtml: string; // Replaced with raw content
-  rawContent: string; // Store the raw markdown content
+  contentHtml: string; // Keep contentHtml for rendering
+  rawContent: string; // Store the raw markdown content for search/edit links
   frontmatter: { [key: string]: any };
 }
 
@@ -45,3 +45,4 @@ export interface SearchDoc {
   title: string;
   content: string; // Raw content used for search index
 }
+

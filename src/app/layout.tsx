@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   },
   description: config.site_description,
   authors: config.site_author ? [{ name: config.site_author }] : [],
-  // Add icons configuration if favicon_path is set
-  ...(config.favicon_path ? { icons: { icon: config.favicon_path } } : {}),
+  // Use the favicon_path from config.yml. Ensure the path starts with '/' if relative to public dir.
+  icons: config.favicon_path ? { icon: config.favicon_path } : undefined,
 };
 
 // Optional: Configure viewport settings
@@ -34,10 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>{/* Keep on html for theme switching, removed whitespace */}
+    <html lang="en" suppressHydrationWarning> {/* Keep suppressHydrationWarning on html for theme provider */}
       <body 
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}
-        // Removed suppressHydrationWarning from body - if issues persist, look at browser extensions or invalid HTML nesting
+        suppressHydrationWarning // Keep this here if browser extensions add attributes
       >
         <ThemeProvider
           attribute="class"

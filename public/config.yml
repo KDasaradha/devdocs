@@ -1,20 +1,22 @@
 # Project Information
 site_name: Comprehensive Technology Documentation
 site_description: A unified guide covering FastAPI, Application Architecture, DevOps, DevSecOps, CI/CD, and related software engineering practices.
-site_author: KDasaradha525
-site_url: https://night-fury.onrender.com/
+site_author: KDasaradha525 # Added site author
+site_url: https://night-fury.onrender.com/ # Added site URL
 
 # Repository Information
-repo_name: KDasaradha/my-tutorials
-repo_url: https://github.com/KDasaradha/my-tutorials.git
-edit_uri: blob/main/docs/
+repo_name: KDasaradha/my-tutorials # Added repo name
+repo_url: https://github.com/KDasaradha/my-tutorials # Kept repo URL
+edit_uri: blob/main/docs/ # URI for 'Edit this page' link base
 
 # Copyright Information
 copyright: "© 2025 KDasaradha525. All rights reserved."
-# Note: Logo and Favicon are added here, but the application currently doesn't implement them.
-# logo: assets/toothless_logo.jpg
-# favicon: assets/toothless_icon.ico
 
+# Assets - paths relative to public directory
+logo_path: /assets/toothless_logo.jpg # Added path for logo
+favicon_path: /assets/toothless_icon.ico # Added path for favicon
+
+# Navigation Structure
 nav:
   - title: Home
     path: index
@@ -209,7 +211,7 @@ nav:
         path: fastapi-pro/dynamic-route-generation
       # Section 13
       - title: 13. API Versioning
-        path: guides/comprehensive-fastapi-guide#13-api-versioning-in-fastapi
+        path: guides/comprehensive-fastapi-guide#13-api-versioning
       - title: 13.1 Versioning Strategies
         path: api-versioning/strategies
       # Section 14
@@ -259,7 +261,7 @@ nav:
         path: fastapi-edge-computing/deployment
       # Section 23
       - title: 23. Zero-Downtime Migrations
-        path: guides/comprehensive-fastapi-guide#23-zero-downtime-migrations-with-sqlalchemy
+        path: guides/comprehensive-fastapi-guide#23-zero-downtime-db-migrations
       - title: 23.1 Zero-Downtime DB Migrations
         path: sqlalchemy/migrations/zero-downtime
       # Section 24
@@ -299,11 +301,11 @@ nav:
       - title: Advanced Features
         path: fastapi/advanced-features/index
       - title: Pro-Level Features
-        path: fastapi/pro
+        path: fastapi-pro/index # Adjusted path
       - title: Performance & Optimization
         path: fastapi/performance/index
       - title: Security
-        path: fastapi/security/overview
+        path: fastapi/security/index # Adjusted path
       - title: Hidden Gems
         path: fastapi/hidden-gems
   - title: SQLAlchemy
@@ -429,10 +431,13 @@ nav:
       - title: Hidden Gems
         path: css/hidden-gems
 
+# Theme Configuration
 theme:
   default: system # can be light, dark, or system
   options:
     - light
     - dark
+
+# Search Configuration
 search:
   enabled: true
