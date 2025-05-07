@@ -16,14 +16,20 @@ interface DocPageProps {
 function getSlugFromParams(params: { slug?: string[] }): string {
   const slugArray = params.slug || [];
   // Join slug parts with forward slashes and handle empty array case
-  const joinedSlug = slugArray.length > 0 ? slugArray.join('/') : 'index'; 
-  return joinedSlug; // Directly use the joined path or 'index' for root
+  const joinedSlug = slugArray.length > 0 ? slugArray.join('/') : 'index';
+  // Normalize ensures consistency (e.g., removes trailing slashes, handles 'index')
+  // Although maybe normalization should happen *only* in markdown lib? Revisit if needed.
+  // For now, just return the joined path or 'index'
+  return joinedSlug;
 }
 
 export async function generateStaticParams() {
   const slugs = getAllMarkdownSlugs();
   return slugs.map((slug) => ({
-    slug: slug === 'index' ? undefined : slug.split('/'), // Root slug is undefined/empty array, others are arrays
+    // For [...slug], the 'slug' param must be an array.
+    // Map 'index' slug to an empty array [] for the root path.
+    // Other slugs are split into arrays.
+    slug: slug === 'index' ? [] : slug.split('/'),
   }));
 }
 
@@ -49,18 +55,18 @@ export async function generateMetadata({ params }: DocPageProps): Promise<Metada
 
 export default async function DocPage({ params }: DocPageProps) {
   const config: SiteConfig = loadConfig();
-  const slugPath = getSlugFromParams(params); 
+  const slugPath = getSlugFromParams(params);
   const document: MarkdownDocument | null = await getMarkdownContentBySlug(slugPath);
-  
+
   // Fetch search docs regardless of whether the specific document is found,
   // as the layout might still need them (e.g., for the search bar).
   const searchDocs: SearchDoc[] = await getAllMarkdownDocumentsForSearch();
 
   if (!document) {
-    console.error(`DocPage: Document not found for slug array: ${params.slug?.join('/') ?? '[]'}, which resolved to lookup slug: "${slugPath}"`);
+    console.warn(`DocPage: Document not found for slug array: ${params.slug?.join('/') ?? '[]'}, which resolved to lookup slug: "${slugPath}"`);
     notFound(); // Triggers the not-found.tsx page
   }
-  
+
   // Pass the successfully found document and search docs to the Layout
   return (
     <Layout config={config} document={document} searchDocs={searchDocs} />
