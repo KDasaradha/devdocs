@@ -19,6 +19,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body 
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}
+        suppressHydrationWarning // Added to specifically target body attribute mismatches
       >
         <ThemeProvider
           attribute="class"
