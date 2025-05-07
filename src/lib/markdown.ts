@@ -8,85 +8,123 @@ import rehypeStringify from 'rehype-stringify';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypePrism from 'rehype-prism-plus'; // Using rehype-prism-plus for wider language support
+import rehypePrism from 'rehype-prism-plus';
 import type { MarkdownDocument, SearchDoc } from '@/types';
 
 const docsDirectory = path.join(process.cwd(), 'content/docs');
 
-export async function getMarkdownContentBySlug(slug: string): Promise<MarkdownDocument | null> {
-  // Normalize slug: treat empty or 'index' (case-insensitive) as 'index' for root
-  const normalizedSlug = (slug === '' || slug.toLowerCase() === 'index') ? 'index' : slug.replace(/\.md$/, '');
+function normalizeSlug(slug: string): string {
+  const cleanedSlug = slug.replace(/\.md$/, '').replace(/\\/g, '/'); // Remove extension, normalize slashes
+  if (cleanedSlug === '' || cleanedSlug === '/' || cleanedSlug.toLowerCase() === 'index') {
+    return 'index'; // Root index file
+  }
+  if (cleanedSlug.endsWith('/index')) {
+    return cleanedSlug.substring(0, cleanedSlug.length - '/index'.length); // 'folder/index' -> 'folder'
+  }
+    if (cleanedSlug.startsWith('/')) {
+    return cleanedSlug.substring(1); // Remove leading slash if present
+  }
+  return cleanedSlug;
+}
 
+export async function getMarkdownContentBySlug(slug: string): Promise<MarkdownDocument | null> {
+  const normalizedSlug = normalizeSlug(slug);
+
+  // Potential file paths:
+  // 1. Direct match: about.md -> /path/to/content/docs/about.md
+  // 2. Directory index: guides/getting-started -> /path/to/content/docs/guides/getting-started/index.md
+  // 3. Root index: index -> /path/to/content/docs/index.md
   const directFilePath = path.join(docsDirectory, `${normalizedSlug}.md`);
   const indexFilePath = path.join(docsDirectory, normalizedSlug, 'index.md');
+  const rootIndexFilePath = path.join(docsDirectory, 'index.md'); // Explicit check for root
 
   let filePathToTry: string | undefined;
-  let fileSourceDescription: string = "";
-
+  let resolvedSlug = normalizedSlug;
 
   if (fs.existsSync(directFilePath)) {
     filePathToTry = directFilePath;
-    fileSourceDescription = `as '${normalizedSlug}.md'`;
   } else if (fs.existsSync(indexFilePath)) {
     filePathToTry = indexFilePath;
-    fileSourceDescription = `as directory index '${normalizedSlug}/index.md'`;
+    // No need to change resolvedSlug here, it represents the directory path
+  } else if (normalizedSlug === 'index' && fs.existsSync(rootIndexFilePath)) {
+    filePathToTry = rootIndexFilePath;
   } else {
-    console.warn(`Markdown file not found for slug "${normalizedSlug}". Tried paths:\n  - ${directFilePath}\n  - ${indexFilePath}`);
+    console.warn(`Markdown file not found for slug "${slug}" (normalized to "${normalizedSlug}"). Tried paths:\n  - ${directFilePath}\n  - ${indexFilePath}${normalizedSlug === 'index' ? `\n  - ${rootIndexFilePath}` : ''}`);
     return null;
   }
 
   try {
     const fileContents = fs.readFileSync(filePathToTry, 'utf8');
+    // Ensure gray-matter doesn't throw on empty files or non-md files if they sneak in
+    if (typeof fileContents !== 'string') {
+       console.error(`Error reading file content as string at "${filePathToTry}" (for slug "${slug}")`);
+       return null;
+    }
     const { data, content } = matter(fileContents);
 
     const processedContent = await remark()
-      .use(remarkGfm)
-      .use(remarkRehype, { allowDangerousHtml: true })
-      .use(rehypeRaw)
-      .use(rehypeSlug)
-      .use(rehypeAutolinkHeadings, { behavior: 'wrap' })
-      .use(rehypePrism, { showLineNumbers: false, ignoreMissing: true })
-      .use(rehypeStringify)
+      .use(remarkGfm) // GitHub Flavored Markdown
+      .use(remarkRehype, { allowDangerousHtml: true }) // Convert markdown to rehype AST
+      .use(rehypeRaw) // Handle raw HTML in markdown
+      .use(rehypeSlug) // Add IDs to headings
+      .use(rehypeAutolinkHeadings, { // Add links to headings
+        behavior: 'wrap', 
+        properties: { className: ['anchor'] } 
+      }) 
+      .use(rehypePrism, { showLineNumbers: false, ignoreMissing: true }) // Syntax highlighting
+      .use(rehypeStringify) // Convert rehype AST to HTML string
       .process(content);
-    
+
     const contentHtml = processedContent.toString();
 
+    // Determine the title: frontmatter > filename (humanized) > 'Untitled'
+    const filename = path.basename(filePathToTry, '.md');
+    const humanizedFilename = filename === 'index' 
+        ? path.basename(path.dirname(filePathToTry)).replace(/-/g, ' ').replace(/_/g, ' ') // Use parent dir name for index files
+        : filename.replace(/-/g, ' ').replace(/_/g, ' ');
+    const title = data.title || humanizedFilename || 'Untitled';
+
     return {
-      slug: normalizedSlug, // Return the slug that was used to find the content
-      title: data.title || normalizedSlug.split('/').pop()?.replace(/-/g, ' ').replace(/_/g, ' ') || 'Untitled',
+      slug: resolvedSlug, // The slug used to access this content
+      title: title,
       contentHtml,
       rawContent: content, // For search indexing
       frontmatter: data,
     };
   } catch (error) {
-    console.error(`Error reading or processing markdown file at "${filePathToTry}" (for slug "${normalizedSlug}", found ${fileSourceDescription}):`, error);
+    console.error(`Error reading or processing markdown file at "${filePathToTry}" (for slug "${slug}"):`, error);
     return null;
   }
 }
 
+// Recursive function to find all .md files and return their slugs
 export function getAllMarkdownSlugs(directory: string = docsDirectory, base: string = ''): string[] {
-  const files = fs.readdirSync(directory, { withFileTypes: true });
   let slugs: string[] = [];
+  try {
+    const files = fs.readdirSync(directory, { withFileTypes: true });
 
-  files.forEach((file) => {
-    const currentPath = path.join(base, file.name);
-    if (file.isDirectory()) {
-      slugs = slugs.concat(getAllMarkdownSlugs(path.join(directory, file.name), currentPath));
-    } else if (file.name.endsWith('.md')) {
-      let slug = currentPath.replace(/\.md$/, '');
-      slug = slug.replace(/\\/g, '/'); // Normalize to forward slashes
-
-      if (path.basename(slug) === 'index') {
-        slug = path.dirname(slug);
-        if (slug === '.' || slug === '') { // Root index.md
-          slug = 'index';
-        }
+    files.forEach((file) => {
+      const relativePath = base ? path.join(base, file.name) : file.name;
+      if (file.isDirectory()) {
+        slugs = slugs.concat(getAllMarkdownSlugs(path.join(directory, file.name), relativePath));
+      } else if (file.isFile() && file.name.endsWith('.md')) {
+        const slugPath = relativePath.replace(/\\/g, '/'); // Normalize slashes
+        const normalized = normalizeSlug(slugPath);
+        slugs.push(normalized);
       }
-      slugs.push(slug);
-    }
-  });
-  // Remove duplicates which might arise if e.g. a directory is named 'index'
-  // and also contains an 'index.md'
+    });
+  } catch (error) {
+      console.error(`Error reading directory ${directory}:`, error);
+      // Depending on requirements, you might want to re-throw or return empty/partial list
+  }
+
+  // Ensure root 'index' is present if index.md exists at the root
+  const rootIndexPath = path.join(docsDirectory, 'index.md');
+  if (fs.existsSync(rootIndexPath) && !slugs.includes('index')) {
+      slugs.push('index');
+  }
+  
+  // Remove potential duplicates which might arise from different normalizations ending up the same
   return [...new Set(slugs)];
 }
 
@@ -95,19 +133,23 @@ export async function getAllMarkdownDocumentsForSearch(): Promise<SearchDoc[]> {
   const slugs = getAllMarkdownSlugs();
   const documents: SearchDoc[] = [];
 
-  for (const slug of slugs) {
-    const effectiveSlug = (slug === '.' || slug === '') ? 'index' : slug;
-    const doc = await getMarkdownContentBySlug(effectiveSlug);
+  // Using Promise.all for potentially faster fetching if async operations were heavier
+  const docPromises = slugs.map(async (slug) => {
+    const doc = await getMarkdownContentBySlug(slug);
     if (doc) {
-      documents.push({
+      return {
         slug: doc.slug,
         title: doc.title,
-        content: doc.rawContent,
-      });
+        content: doc.rawContent, // Use raw content for indexing
+      };
     } else {
-      // This warning is now inside getMarkdownContentBySlug if file isn't found
-      // console.warn(`Search: Document not found for slug '${effectiveSlug}' during search indexing.`);
+      // Warning already logged in getMarkdownContentBySlug
+      return null;
     }
-  }
-  return documents;
+  });
+
+  const results = await Promise.all(docPromises);
+  
+  // Filter out any null results (where fetching failed)
+  return results.filter((doc): doc is SearchDoc => doc !== null);
 }

@@ -3,10 +3,10 @@ import type { Config } from "tailwindcss";
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './pages/**/*.{ts,tsx,js,jsx}', // Added js, jsx for wider compatibility if needed
+    './components/**/*.{ts,tsx,js,jsx}',
+    './app/**/*.{ts,tsx,js,jsx}',
+    './src/**/*.{ts,tsx,js,jsx}', // Ensure src is included
   ],
   prefix: "",
   theme: {
@@ -83,11 +83,11 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      // Typography plugin removed for Turbopack stability
-      // typography: (theme: any) => ({
+      // If using custom prose styles in globals.css, ensure typography plugin is NOT active
+      // typography: (theme: any) => ({ // KEEP THIS COMMENTED OUT if using custom markdown styles
       //   DEFAULT: {
       //     css: {
-            // ... typography styles
+            // ... default prose styles if needed ...
       //     },
       //   },
       // }),
@@ -95,7 +95,7 @@ const config = {
   },
   plugins: [
     require("tailwindcss-animate"),
-    // require("@tailwindcss/typography") // Ensure this remains commented out
+    // require("@tailwindcss/typography"), // Ensure this is commented out or removed if not used or causing conflicts
   ],
 } satisfies Config;
 

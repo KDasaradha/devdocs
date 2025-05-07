@@ -34,10 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning> {/* Keep on html for theme switching */}
       <body 
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}
-        suppressHydrationWarning // Added to specifically target body attribute mismatches
+        // Removed suppressHydrationWarning from body - if issues persist, look at browser extensions or invalid HTML nesting
       >
         <ThemeProvider
           attribute="class"
@@ -53,5 +53,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-```
