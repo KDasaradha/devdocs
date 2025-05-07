@@ -27,8 +27,8 @@ export function Layout({ config, document, searchDocs, children }: LayoutProps) 
         <div className="flex-1 container mx-auto px-4 md:px-8 max-w-screen-2xl">
           <div className="flex flex-col md:flex-row">
             <Sidebar navItems={nav} />
-            <main className="flex-1 md:pl-72 lg:pl-80 py-8 w-full overflow-x-hidden md:ml-4"> {/* Added md:ml-4 for some space */}
-              <div className="max-w-3xl mx-auto w-full"> {/* Constrain content width */}
+            <main className="flex-1 md:pl-52 lg:pl-56 py-8 w-full overflow-x-hidden">
+              <div className="max-w-4xl mx-auto w-full"> {/* Increased max-width from 3xl to 4xl */}
                 {document ? (
                   <>
                     <PageTitle title={document.title} />
