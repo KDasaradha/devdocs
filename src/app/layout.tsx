@@ -1,3 +1,4 @@
+
 import type { Metadata, Viewport } from 'next';
 import { inter, firaCode } from '@/lib/fonts';
 import './globals.css';
@@ -67,10 +68,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning> {/* Added suppressHydrationWarning here */}
-      <body
+    // Added suppressHydrationWarning to <html> tag for next-themes compatibility
+    <html lang="en" suppressHydrationWarning>
+      <head /> {/* Ensure head is explicitly included */}
+      <body 
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}
-        suppressHydrationWarning // Keep this for potential browser extension issues
+        // Removed suppressHydrationWarning from body unless specifically needed for body attributes
       >
         <ThemeProvider
           attribute="class"
