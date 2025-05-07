@@ -4,71 +4,129 @@ import { getMarkdownContentBySlug, getAllMarkdownSlugs, getAllMarkdownDocumentsF
 import type { SiteConfig, MarkdownDocument, SearchDoc } from '@/types';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import path from 'path'; // Import path for potential normalization if needed
+import path from 'path';
 
 interface DocPageProps {
   params: {
-    slug?: string[]; // Slug can be undefined for the root page if not explicitly caught
+    slug?: string[];
   };
 }
 
-// Helper function to normalize slug array from params into a single slug string
+// Helper function to convert the slug array from params into a single string path
 function getSlugFromParams(params: { slug?: string[] }): string {
   const slugArray = params.slug || [];
-  // Join slug parts with forward slashes and handle empty array case
   const joinedSlug = slugArray.length > 0 ? slugArray.join('/') : 'index';
-  // Normalize ensures consistency (e.g., removes trailing slashes, handles 'index')
-  // Although maybe normalization should happen *only* in markdown lib? Revisit if needed.
-  // For now, just return the joined path or 'index'
-  return joinedSlug;
+  // normalizeSlug might not be needed here if getMarkdownContentBySlug handles it,
+  // but keeping it consistent with generateStaticParams might be safer.
+  // However, internal linking should use the normalized slug.
+  // Let's simplify and let getMarkdownContentBySlug handle normalization internally.
+  return joinedSlug === '' ? 'index' : joinedSlug;
 }
 
-export async function generateStaticParams() {
-  const slugs = getAllMarkdownSlugs();
-  return slugs.map((slug) => ({
-    // For [...slug], the 'slug' param must be an array.
-    // Map 'index' slug to an empty array [] for the root path.
-    // Other slugs are split into arrays.
-    slug: slug === 'index' ? [] : slug.split('/'),
-  }));
+
+// Generate static params, but filter to ensure only valid pages are generated
+export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
+  const allPossibleSlugs = getAllMarkdownSlugs();
+  const validParams: { slug: string[] }[] = [];
+
+  console.log(`---> generateStaticParams: Found ${allPossibleSlugs.length} possible slugs: [${allPossibleSlugs.join(', ')}]`);
+
+  for (const slug of allPossibleSlugs) {
+    // Check if content exists for this slug before adding it to params
+    // console.log(`   Checking slug: "${slug}"`);
+    const doc = await getMarkdownContentBySlug(slug); // Use the same function as the page
+    if (doc) {
+        // console.log(`     ✔ Valid content found for slug: "${slug}"`);
+        const slugArray = slug === 'index' ? [] : slug.split('/');
+        validParams.push({ slug: slugArray });
+    } else {
+       console.warn(`   - Skipping slug in generateStaticParams (content check failed): "${slug}"`);
+    }
+  }
+
+  console.log(`---> generateStaticParams: Returning ${validParams.length} valid param objects.`);
+   if (validParams.length === 0 && allPossibleSlugs.length > 0) {
+      console.error("----> generateStaticParams: CRITICAL - No valid slugs found with content. Check file paths, read permissions, and markdown processing logic.");
+   }
+  // Ensure the root path param ({ slug: [] }) is included if 'index' is a valid slug
+  // This can be missed if 'index' normalization differs between getAllMarkdownSlugs and getMarkdownContentBySlug
+  const hasRootParam = validParams.some(p => p.slug.length === 0);
+  if (!hasRootParam && allPossibleSlugs.includes('index')) {
+    const indexDoc = await getMarkdownContentBySlug('index');
+    if (indexDoc) {
+      console.log("--> generateStaticParams: Explicitly adding root param { slug: [] } as 'index' content exists.");
+      validParams.push({ slug: [] });
+    }
+  }
+  
+  return validParams;
 }
+
 
 export async function generateMetadata({ params }: DocPageProps): Promise<Metadata> {
-  const slugPath = getSlugFromParams(params);
-  const doc = await getMarkdownContentBySlug(slugPath); // Use the same logic as in page component
+  const slugToFetch = getSlugFromParams(params);
+  // console.log(`generateMetadata: Looking for doc with slug: "${slugToFetch}"`);
+  const doc = await getMarkdownContentBySlug(slugToFetch);
   const config = loadConfig();
 
   if (!doc) {
-    // It's important that generateMetadata and the page component have consistent
-    // notFound behavior. If getMarkdownContentBySlug returns null, this should too.
-    return {
-      title: `Page Not Found | ${config.site_name}`,
-      description: `The requested page was not found.`
-    };
+    console.warn(`generateMetadata: Document not found for slug "${slugToFetch}". Returning 'Not Found' metadata.`);
+     // Option 1: Return specific 404 metadata (if not using notFound())
+     // return {
+     //    title: `Page Not Found | ${config.site_name || 'Docs'}`,
+     //    description: `The requested page '${slugToFetch}' was not found.`
+     // };
+     // Option 2: Trigger notFound() - Recommended for consistency
+     // Note: Calling notFound() directly in generateMetadata might have implications depending on Next.js version behavior.
+     // A safer approach is to handle it in the page component. Let's return basic metadata here.
+     return {
+        title: `Page Not Found | ${config.site_name || 'Docs'}`,
+     }
   }
 
+  // console.log(`generateMetadata: Found doc titled "${doc.title}" for slug "${slugToFetch}".`);
   return {
-    title: `${doc.title} | ${config.site_name}`,
-    description: doc.frontmatter?.description as string || `Documentation for ${doc.title}`,
+    title: `${doc.title} | ${config.site_name || 'Docs'}`,
+    description: doc.frontmatter?.description as string || config.site_description || `Documentation for ${doc.title}`,
+     // Add Open Graph and Twitter metadata using doc details
+     openGraph: {
+        title: `${doc.title} | ${config.site_name || 'Docs'}`,
+        description: doc.frontmatter?.description as string || config.site_description,
+        url: `${config.site_url || ''}/${doc.slug === 'index' ? '' : doc.slug}`,
+        // Add an image if available in frontmatter or config
+        // images: doc.frontmatter?.image ? [{ url: doc.frontmatter.image }] : config.logo_path ? [{url: config.logo_path}] : [],
+     },
+     twitter: {
+        card: 'summary_large_image',
+        title: `${doc.title} | ${config.site_name || 'Docs'}`,
+        description: doc.frontmatter?.description as string || config.site_description,
+         // images: doc.frontmatter?.image ? [doc.frontmatter.image] : config.logo_path ? [config.logo_path] : [],
+     }
   };
 }
 
 export default async function DocPage({ params }: DocPageProps) {
   const config: SiteConfig = loadConfig();
-  const slugPath = getSlugFromParams(params);
-  const document: MarkdownDocument | null = await getMarkdownContentBySlug(slugPath);
-
-  // Fetch search docs regardless of whether the specific document is found,
-  // as the layout might still need them (e.g., for the search bar).
-  const searchDocs: SearchDoc[] = await getAllMarkdownDocumentsForSearch();
-
+  const slugToFetch = getSlugFromParams(params);
+  // console.log(`DocPage rendering: Request params: ${JSON.stringify(params.slug)}, Trying to fetch slug: "${slugToFetch}"`);
+  
+  const document: MarkdownDocument | null = await getMarkdownContentBySlug(slugToFetch);
+  
+  // CRITICAL: Check if document is null *before* trying to fetch searchDocs or render Layout
   if (!document) {
-    console.warn(`DocPage: Document not found for slug array: ${params.slug?.join('/') ?? '[]'}, which resolved to lookup slug: "${slugPath}"`);
-    notFound(); // Triggers the not-found.tsx page
+    console.error(`DocPage: Document not found for slug "${slugToFetch}". Triggering notFound().`);
+    notFound(); // Trigger the standard 404 page
   }
 
-  // Pass the successfully found document and search docs to the Layout
+  // Fetch all documents needed for search *after* confirming the current page exists
+  const searchDocs: SearchDoc[] = await getAllMarkdownDocumentsForSearch();
+
+  // console.log(`DocPage: Rendering layout for "${slugToFetch}" with title "${document.title}".`);
+  // Render the Layout with the successfully fetched document content
   return (
     <Layout config={config} document={document} searchDocs={searchDocs} />
   );
 }
+
+// Ensure fs is imported if used within this file (e.g., for debugging checks, though ideally not needed here)
+import fs from 'fs';

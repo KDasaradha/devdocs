@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { ClipboardCopy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils'; // Import cn for conditional classes
+import { cn } from '@/lib/utils';
 
 interface CodeBlockProps {
   rawString: string;
-  children: React.ReactNode;
-  className?: string; // Allow passing className for language detection etc.
+  children: React.ReactNode; // This will contain the highlighted code elements from rehype-prism
+  className?: string; // Language class like 'language-python' comes here from the original <pre>
 }
 
 export function CodeBlock({ rawString, children, className }: CodeBlockProps) {
@@ -34,17 +34,24 @@ export function CodeBlock({ rawString, children, className }: CodeBlockProps) {
     }
   }, [isCopied]);
 
-  // NOTE: The parent `pre` tag might be added by the markdown processor (rehype-prism-plus).
-  // This component should wrap the `code` element typically found inside the `pre`.
-  // However, the way it's likely used in MarkdownRenderer via `components` prop means
-  // this component *replaces* the `pre` element. We need to provide the `pre` wrapper here.
+  // Extract language from className, e.g., "language-js" -> "js"
+  const language = className?.match(/language-(\S+)/)?.[1];
+
 
   return (
-    <div className="relative group my-4"> 
-      {/* Add the pre tag here if this component replaces it */}
-      <pre className={cn("bg-muted/50 p-4 rounded-md overflow-x-auto font-mono text-sm shadow-inner relative", className)}>
-        {/* The actual code content is passed as children */}
-        <code>{children}</code> 
+    <div className="relative group my-4">
+      {/* Render the <pre> tag here */}
+      <pre className={cn(
+        // Base styles for pre
+        "bg-muted/50 p-4 rounded-md overflow-x-auto text-sm shadow-inner relative",
+        // Add language class back for styling if needed, though prism adds it to <code>
+        className
+      )}>
+        {/* Render the <code> tag here */}
+        {/* The children passed from MarkdownRenderer already contain the highlighted spans */}
+        <code className={cn("font-mono", className)}>
+          {children}
+        </code>
          <Button
             variant="ghost"
             size="icon"
@@ -55,7 +62,6 @@ export function CodeBlock({ rawString, children, className }: CodeBlockProps) {
             {isCopied ? <Check className="h-4 w-4 text-green-500" /> : <ClipboardCopy className="h-4 w-4" />}
           </Button>
       </pre>
-     
     </div>
   );
 }

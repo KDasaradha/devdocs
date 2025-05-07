@@ -10,21 +10,56 @@ import { SiteConfig } from '@/types';
 const config: SiteConfig = loadConfig();
 
 export const metadata: Metadata = {
+  metadataBase: config.site_url ? new URL(config.site_url) : undefined, // Add metadataBase for absolute URLs
   title: {
-    default: config.site_name,
-    template: `%s | ${config.site_name}`,
+    default: config.site_name || "DevDocs++", // Add fallback title
+    template: `%s | ${config.site_name || "DevDocs++"}`, // Add fallback title
   },
   description: config.site_description,
   authors: config.site_author ? [{ name: config.site_author }] : [],
   // Use the favicon_path from config.yml. Ensure the path starts with '/' if relative to public dir.
-  icons: config.favicon_path ? { icon: config.favicon_path } : undefined,
+  // Add multiple sizes for better compatibility
+  icons: config.favicon_path ? [
+      { rel: 'icon', url: config.favicon_path }, // Standard favicon
+      // Example: Add apple-touch-icon if you have one
+      // { rel: 'apple-touch-icon', url: '/apple-touch-icon.png' }, 
+      ] 
+      : [{ rel: 'icon', url: '/favicon.ico' }], // Default fallback
+  // Open Graph and Twitter Card metadata (Basic Example)
+  openGraph: {
+    title: config.site_name,
+    description: config.site_description,
+    url: config.site_url,
+    siteName: config.site_name,
+    // Assuming logo_path can be used as an Open Graph image
+    images: config.logo_path ? [
+      {
+        url: config.logo_path, // Needs to be an absolute URL or Next.js needs metadataBase
+        width: 800, // Provide dimensions if known
+        height: 600,
+        alt: `${config.site_name} Logo`,
+      },
+    ] : [],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: config.site_name,
+    description: config.site_description,
+     // Assuming logo_path can be used as a Twitter image
+    images: config.logo_path ? [config.logo_path] : [], // Needs absolute URL
+    // Optional: Add Twitter handle if available
+    // creator: '@yourTwitterHandle', 
+  },
 };
+
 
 // Optional: Configure viewport settings
 // export const viewport: Viewport = {
 //   themeColor: [
-//     { media: '(prefers-color-scheme: light)', color: 'white' },
-//     { media: '(prefers-color-scheme: dark)', color: 'black' },
+//     { media: '(prefers-color-scheme: light)', color: 'hsl(var(--background))' }, // Use CSS vars
+//     { media: '(prefers-color-scheme: dark)', color: 'hsl(var(--background))' },
 //   ],
 // }
 
@@ -34,10 +69,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    // Removed suppressHydrationWarning from <html>
+    <html lang="en">
       <body
         className={`${inter.variable} ${firaCode.variable} font-sans antialiased`}
-        suppressHydrationWarning
+        suppressHydrationWarning // Keep this here ONLY if browser extensions are known to cause issues
       >
         <ThemeProvider
           attribute="class"

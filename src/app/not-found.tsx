@@ -1,33 +1,24 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Layout } from '@/components/layout/layout';
-import { loadConfig } from '@/lib/config';
-import { getAllMarkdownDocumentsForSearch } from '@/lib/markdown';
-import type { SiteConfig, SearchDoc } from '@/types';
+// Removed Layout, loadConfig, getAllMarkdownDocumentsForSearch, SiteConfig, SearchDoc imports
 
-export default async function NotFoundPage() {
-  const config: SiteConfig = loadConfig();
-  // Fetch search docs even for 404 page if search is part of the global layout
-  const searchDocs: SearchDoc[] = await getAllMarkdownDocumentsForSearch();
+// This component should be self-contained and not rely on potentially failing
+// server-side data fetching like loadConfig or getAllMarkdownDocumentsForSearch
+// which might be the reason the 404 page itself was failing to render previously.
+export default function NotFoundPage() {
 
-  // The content for the 404 page itself
-  const NotFoundContent = (
-      <div className="flex flex-col items-center justify-center text-center py-20">
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground p-4">
+      <div className="text-center">
         <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
         <h2 className="text-3xl font-semibold mb-6">Page Not Found</h2>
-        <p className="text-muted-foreground mb-8 max-w-md">
+        <p className="text-muted-foreground mb-8 max-w-md mx-auto">
           Oops! The page you are looking for doesn't exist. It might have been moved or deleted.
         </p>
         <Button asChild size="lg">
           <Link href="/">Go back to Homepage</Link>
         </Button>
       </div>
-  );
-
-  // Render the Layout, passing null for the document, but include the 404 content as children
-  return (
-    <Layout config={config} document={null} searchDocs={searchDocs}>
-      {NotFoundContent}
-    </Layout>
+    </div>
   );
 }
