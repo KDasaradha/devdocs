@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useSearch } from './search-provider';
 import { cn } from '@/lib/utils';
+import { getNavLinkHref } from '@/lib/navigation'; // Import the helper
 
 export function SearchBar() {
   const [query, setQuery] = useState('');
@@ -77,7 +78,7 @@ export function SearchBar() {
                   {results.map(({ slug, title }) => (
                     <li key={slug}>
                       <Link
-                        href={`/${slug.replace(/^index$/, '')}`}
+                        href={getNavLinkHref(slug)} // Use helper for consistent link
                         className="block px-4 py-2 text-sm hover:bg-muted rounded-md transition-colors"
                         onClick={() => {
                           setQuery('');
@@ -116,4 +117,3 @@ const Button = React.forwardRef<
   )
 });
 Button.displayName = "Button";
-

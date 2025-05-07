@@ -75,6 +75,65 @@
 @layer base {
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1; /* Keep for font ligatures if needed */
+    font-feature-settings: "rlig" 1, "calt" 1; 
+  }
+
+  /* Improve readability of markdown content */
+  .markdown-content {
+    h1, h2, h3, h4, h5, h6 {
+      @apply scroll-m-20; /* For better anchor linking */
+    }
+    h1 {
+      @apply text-3xl font-bold my-6 pb-2 border-b border-border;
+    }
+    h2 {
+      @apply text-2xl font-semibold my-5 pb-1 border-b border-border/60;
+    }
+    h3 {
+      @apply text-xl font-semibold my-4;
+    }
+    p {
+      @apply my-4 leading-relaxed text-base;
+    }
+    a {
+      @apply text-primary hover:underline decoration-primary/50 underline-offset-2;
+    }
+    ul, ol {
+      @apply my-4 pl-6 space-y-1;
+    }
+    ul {
+      @apply list-disc;
+    }
+    ol {
+      @apply list-decimal;
+    }
+    li > p {
+        @apply my-1; /* Reduce margin for paragraphs inside list items */
+    }
+    blockquote {
+      @apply my-4 pl-4 border-l-4 border-muted italic text-muted-foreground;
+    }
+    code:not(pre > code) { /* Inline code */
+      @apply bg-muted/70 text-accent px-1.5 py-0.5 rounded text-sm font-mono;
+    }
+    /* Ensure pre tags don't get prose styling that conflicts with prism */
+    pre {
+      @apply bg-muted/50 p-4 rounded-md overflow-x-auto font-mono text-sm shadow-inner my-6;
+    }
+    img {
+      @apply rounded-md my-6 shadow-md max-w-full h-auto border border-border;
+    }
+    table {
+        @apply my-6 w-full border-collapse border border-border;
+    }
+    th, td {
+        @apply border border-border px-4 py-2 text-left;
+    }
+    th {
+        @apply bg-muted/50 font-semibold;
+    }
+    hr {
+        @apply my-8 border-border;
+    }
   }
 }

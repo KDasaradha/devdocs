@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { ChevronRight, Minus } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { getNavLinkHref } from '@/lib/navigation';
 
 interface NavItemProps {
   item: NavItemConfig;
@@ -17,24 +18,25 @@ export function NavItem({ item, depth = 0 }: NavItemProps) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Normalize item.path to always start with a slash if it exists, and handle 'index' case
-  const normalizedItemPath = item.path 
-    ? (item.path === 'index' || item.path === '/' ? '/' : `/${item.path.replace(/^\//, '')}`) 
-    : null;
+  // item.path is now a slug (e.g., 'index', 'guides/getting-started')
+  // Convert to href for comparison and linking
+  const itemHref = item.path ? getNavLinkHref(item.path) : null;
 
-  const isActive = normalizedItemPath ? pathname === normalizedItemPath : false;
+  const isActive = itemHref ? pathname === itemHref : false;
   
-  // Determine if any child is active to keep parent accordion open
   const isChildActive = item.children ? item.children.some(child => {
-    const normalizedChildPath = child.path 
-      ? (child.path === 'index' || child.path === '/' ? '/' : `/${child.path.replace(/^\//, '')}`)
-      : null;
-    return normalizedChildPath ? pathname === normalizedChildPath || pathname.startsWith(`${normalizedChildPath}/`) : false;
+    const childHref = child.path ? getNavLinkHref(child.path) : null;
+    return childHref ? pathname === childHref || pathname.startsWith(`${childHref}/`) : false;
   }) : false;
 
   useEffect(() => {
-    setIsOpen(isChildActive || isActive);
-  }, [isChildActive, isActive, pathname]); // Added pathname to ensure re-evaluation on route change
+    // Automatically open if the item itself is active or a child is active
+    if (isActive || isChildActive) {
+      setIsOpen(true);
+    }
+    // Note: We might not want to auto-close if user manually opened it.
+    // This useEffect primarily handles initial open state based on active route.
+  }, [isActive, isChildActive, pathname]);
 
 
   const itemIndentClass = `pl-${depth * 4}`;
@@ -45,15 +47,15 @@ export function NavItem({ item, depth = 0 }: NavItemProps) {
         <AccordionItem value={item.title} className="border-b-0">
           <AccordionTrigger 
             className={cn(
-              "py-2 px-3 w-full text-left hover:bg-muted/50 rounded-md flex justify-between items-center",
+              "py-2 px-3 w-full text-left hover:bg-muted/50 rounded-md flex justify-between items-center group", // Added group
               itemIndentClass,
-              // An accordion trigger (parent) is active if itself is the target or one of its children is
               (isActive || isChildActive) && "font-semibold text-primary"
             )}
           >
             <span className="flex items-center">
               {item.title}
             </span>
+            {/* Chevron managed by AccordionTrigger by default */}
           </AccordionTrigger>
           <AccordionContent className="pt-1 pb-0">
             <ul className="space-y-1">
@@ -69,9 +71,13 @@ export function NavItem({ item, depth = 0 }: NavItemProps) {
     );
   }
 
-  if (!normalizedItemPath) {
+  if (!itemHref) { // If no path, render as text (e.g. section header without link)
     return (
-      <span className={cn("block py-2 px-3 text-muted-foreground", itemIndentClass)}>
+      <span className={cn(
+        "block py-2 px-3 text-muted-foreground font-medium",
+        itemIndentClass,
+        depth > 0 && "text-sm"
+      )}>
         {item.title}
       </span>
     );
@@ -79,16 +85,18 @@ export function NavItem({ item, depth = 0 }: NavItemProps) {
   
   return (
     <Link
-      href={normalizedItemPath}
+      href={itemHref}
       className={cn(
-        "flex items-center gap-2 py-2 px-3 hover:bg-muted/50 rounded-md transition-colors duration-150",
+        "flex items-center gap-2 py-2 px-3 hover:bg-muted/50 rounded-md transition-colors duration-150 text-sm",
         itemIndentClass,
-        isActive ? "font-semibold text-primary bg-muted/30" : "text-foreground/80 hover:text-foreground"
+        isActive ? "font-semibold text-primary bg-primary/10" : "text-foreground/80 hover:text-foreground"
       )}
+      onClick={() => {
+        // Potentially close other accordions or handle mobile nav close if needed
+      }}
     >
-      <Minus className={cn("h-3 w-3 shrink-0", depth === 0 && "hidden")} />
+      {depth > 0 && <Minus className="h-3 w-3 shrink-0 text-muted-foreground/70" />}
       {item.title}
     </Link>
   );
 }
-
