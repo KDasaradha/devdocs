@@ -16,12 +16,14 @@ const createAbsoluteUrl = (path: string | undefined, baseUrl: string | undefined
   if (!path || !baseUrl) return undefined;
   if (path.startsWith('http')) return path;
   try {
-    // Use URL constructor for reliable joining, handling base paths
-    return new URL(path, baseUrl).toString();
+    // Ensure the base URL has a trailing slash if it doesn't have one and isn't just the origin
+    const urlBase = baseUrl.endsWith('/') || new URL(baseUrl).pathname === '/' ? baseUrl : `${baseUrl}/`;
+    return new URL(path, urlBase).toString();
   } catch (e) {
     console.error(`Error creating absolute URL for path "${path}" with base "${baseUrl}":`, e);
     // Fallback for cases where baseUrl might be invalid or path is tricky
-    return path.startsWith('/') ? `${baseUrl}${path}` : `${baseUrl}/${path}`;
+    const cleanBase = baseUrl.replace(/\/$/, '');
+    return path.startsWith('/') ? `${cleanBase}${path}` : `${cleanBase}/${path}`;
   }
 };
 
@@ -88,10 +90,11 @@ export default function RootLayout({
   return (
     // Added suppressHydrationWarning to <html> tag for next-themes compatibility
     <html lang="en" suppressHydrationWarning>
-      <head /> {/* Ensure head is explicitly included */}
+      {/* Ensure head is explicitly included and is empty, Next.js handles metadata */}
+      <head />
+      {/* Removed suppressHydrationWarning from body unless specifically needed for browser extensions */}
       <body
         className={cn(inter.variable, firaCode.variable, 'font-sans antialiased')}
-        // Remove suppressHydrationWarning from body unless specifically needed for browser extensions
       >
         <ThemeProvider
           attribute="class"
