@@ -2,11 +2,11 @@
 site_name: Comprehensive Technology Documentation
 site_description: A unified guide covering FastAPI, Application Architecture, DevOps, DevSecOps, CI/CD, and related software engineering practices.
 site_author: KDasaradha525 # Added site author
-site_url: https://night-fury.onrender.com/ # Added site URL
+site_url: https://night-fury.vercel.app/ # Added site URL
 
 # Repository Information
-repo_name: KDasaradha/my-tutorials # Added repo name
-repo_url: https://github.com/KDasaradha/my-tutorials # Kept repo URL
+repo_name: KDasaradha/devdocs # Added repo name
+repo_url: https://github.com/KDasaradha/devdocs # Kept repo URL
 edit_uri: blob/main/docs/ # URI for 'Edit this page' link base
 
 # Copyright Information
