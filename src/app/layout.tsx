@@ -92,9 +92,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       {/* Ensure head is explicitly included and is empty, Next.js handles metadata */}
       <head />
-      {/* Removed suppressHydrationWarning from body unless specifically needed for browser extensions */}
+      {/* Added suppressHydrationWarning to body for browser extensions and hydration issues */}
       <body
-        className={cn(inter.variable, firaCode.variable, 'font-sans antialiased')}
+        className='font-sans antialiased'
       >
         <ThemeProvider
           attribute="class"
