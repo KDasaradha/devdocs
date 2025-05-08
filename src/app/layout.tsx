@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { loadConfig } from '@/lib/config';
 import type { SiteConfig } from '@/types';
-import { cn } from '@/lib/utils'; // Import cn
+import { cn } from '@/lib/utils';
 
 const config: SiteConfig = loadConfig();
 
@@ -68,11 +68,10 @@ export default function RootLayout({
   return (
     // Added suppressHydrationWarning to <html> tag for next-themes compatibility
     <html lang="en" suppressHydrationWarning>
-      {/* Ensure head is explicitly included and is empty, Next.js handles metadata */}
-      <head />
+      <head /> {/* Ensure head is explicitly included */}
       <body
         className={cn(inter.variable, firaCode.variable, 'font-sans antialiased')}
-        // Remove suppressHydrationWarning from body unless specifically needed for browser extensions
+        suppressHydrationWarning // Add suppressHydrationWarning to body to ignore extension attributes
       >
         <ThemeProvider
           attribute="class"
@@ -88,3 +87,4 @@ export default function RootLayout({
     </html>
   );
 }
+
