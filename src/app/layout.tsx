@@ -32,9 +32,9 @@ export const metadata: Metadata = {
     siteName: config.site_name,
     images: config.logo_path ? [
       {
-        url: config.logo_path,
-        width: 800,
-        height: 600,
+        url: config.logo_path.startsWith('http') ? config.logo_path : new URL(config.logo_path, config.site_url || 'http://localhost:3000').toString(), // Use a default base URL
+        width: 800, // Example width, adjust if known
+        height: 600, // Example height, adjust if known
         alt: `${config.site_name} Logo`,
       },
     ] : [],
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: config.site_name,
     description: config.site_description,
-    images: config.logo_path ? [config.logo_path] : [],
+    images: config.logo_path ? [config.logo_path.startsWith('http') ? config.logo_path : new URL(config.logo_path, config.site_url || 'http://localhost:3000').toString()] : [],
     // Consider adding twitter:creator or twitter:site
   },
 };
@@ -67,11 +67,10 @@ export default function RootLayout({
 }>) {
   return (
     // Added suppressHydrationWarning to <html> tag for next-themes compatibility
-    <html lang="en" suppressHydrationWarning>
-      <head /> {/* Ensure head is explicitly included */}
+    <html lang="en" suppressHydrationWarning><head /> {/* Ensure head is explicitly included and immediately follows html tag */}
       <body
         className={cn(inter.variable, firaCode.variable, 'font-sans antialiased')}
-        suppressHydrationWarning // Add suppressHydrationWarning to body to ignore extension attributes
+        suppressHydrationWarning // Keep this here ONLY if browser extensions are known to cause issues
       >
         <ThemeProvider
           attribute="class"
