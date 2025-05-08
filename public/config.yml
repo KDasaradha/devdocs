@@ -1,5 +1,6 @@
 # Project Information
-site_name: Comprehensive Technology Documentation
+site_name: DevDocs++
+site_full_name: Comprehensive Technology Documentation
 site_description: A unified guide covering FastAPI, Application Architecture, DevOps, DevSecOps, CI/CD, and related software engineering practices.
 site_author: KDasaradha525
 site_url: https://night-fury.vercel.app/ # Use the actual deployment URL when available
