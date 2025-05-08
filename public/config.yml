@@ -1,20 +1,21 @@
 # Project Information
 site_name: Comprehensive Technology Documentation
 site_description: A unified guide covering FastAPI, Application Architecture, DevOps, DevSecOps, CI/CD, and related software engineering practices.
-site_author: KDasaradha525 # Added site author
-site_url: https://night-fury.vercel.app/ # Added site URL
+site_author: KDasaradha525
+site_url: https://night-fury.onrender.com/ # Use the actual deployment URL when available
 
 # Repository Information
-repo_name: KDasaradha/devdocs # Added repo name
-repo_url: https://github.com/KDasaradha/devdocs # Kept repo URL
-edit_uri: blob/main/docs/ # URI for 'Edit this page' link base
+repo_name: KDasaradha/my-tutorials
+repo_url: https://github.com/KDasaradha/my-tutorials # Ensure this matches the correct repo
+edit_uri: blob/main/content/docs/ # Ensure this points to the markdown files location
 
 # Copyright Information
 copyright: "© 2025 KDasaradha525. All rights reserved."
 
 # Assets - paths relative to public directory
-logo_path: /assets/toothless_logo.jpg # Added path for logo
-favicon_path: /assets/toothless_icon.ico # Added path for favicon
+# Assumes files are in public/assets/
+logo_path: /assets/toothless_logo.jpg # Updated path
+favicon_path: /assets/toothless_icon.ico # Updated path
 
 # Navigation Structure
 nav:
@@ -295,41 +296,41 @@ nav:
   - title: FastAPI
     children:
       - title: Introduction
-        path: fastapi/introduction/index
+        path: fastapi/introduction # Index for the section
       - title: Core Concepts
-        path: fastapi/core-concepts/index
+        path: fastapi/core-concepts # Index for the section
       - title: Advanced Features
-        path: fastapi/advanced-features/index
+        path: fastapi/advanced-features # Index for the section
       - title: Pro-Level Features
-        path: fastapi-pro/index # Adjusted path
+        path: fastapi-pro # Index for the section
       - title: Performance & Optimization
-        path: fastapi/performance/index
+        path: fastapi/performance # Index for the section
       - title: Security
-        path: fastapi/security/index # Adjusted path
+        path: fastapi/security # Index for the section
       - title: Hidden Gems
         path: fastapi/hidden-gems
   - title: SQLAlchemy
     children:
       - title: Introduction
-        path: sqlalchemy/introduction/index
+        path: sqlalchemy/introduction # Index for the section
       - title: FastAPI Integration
-        path: sqlalchemy/fastapi-integration/index
+        path: sqlalchemy/fastapi-integration # Index for the section
       - title: Pydantic Integration
-        path: sqlalchemy/pydantic-integration/index
+        path: sqlalchemy/pydantic-integration # Index for the section
       - title: Modeling
-        path: sqlalchemy/modeling/index
+        path: sqlalchemy/modeling # Index for the section
       - title: Advanced Techniques
-        path: sqlalchemy/advanced-techniques/index
+        path: sqlalchemy/advanced-techniques # Index for the section
       - title: Performance & Optimization
         path: sqlalchemy/performance/sqlalchemy-performance
       - title: Advanced Patterns
-        path: sqlalchemy/advanced-patterns/index
+        path: sqlalchemy/advanced-patterns # Index for the section
       - title: Async
-        path: sqlalchemy/async/index
+        path: sqlalchemy/async # Index for the section
       - title: Migrations
-        path: sqlalchemy/migrations/index
+        path: sqlalchemy/migrations # Index for the section
       - title: Best Practices
-        path: sqlalchemy/best-practices/index
+        path: sqlalchemy/best-practices # Index for the section
       - title: Hidden Gems
         path: sqlalchemy/hidden-gems
   - title: Pydantic
@@ -339,11 +340,11 @@ nav:
       - title: Intermediate
         path: pydantic/intermediate
       - title: Advanced Features
-        path: pydantic/advanced-features/index
+        path: pydantic/advanced-features # Index for the section
       - title: Pro
         path: pydantic/pro
       - title: Type Checking
-        path: pydantic/type-checking/index
+        path: pydantic/type-checking # Index for the section
       - title: Hidden Gems
         path: pydantic/hidden-gems
   - title: PostgreSQL

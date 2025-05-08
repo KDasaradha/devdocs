@@ -11,6 +11,23 @@ import { cn } from '@/lib/utils';
 
 const config: SiteConfig = loadConfig();
 
+// Function to create absolute URLs for assets
+const createAbsoluteUrl = (path: string | undefined, baseUrl: string | undefined): string | undefined => {
+  if (!path || !baseUrl) return undefined;
+  if (path.startsWith('http')) return path;
+  try {
+    // Use URL constructor for reliable joining, handling base paths
+    return new URL(path, baseUrl).toString();
+  } catch (e) {
+    console.error(`Error creating absolute URL for path "${path}" with base "${baseUrl}":`, e);
+    // Fallback for cases where baseUrl might be invalid or path is tricky
+    return path.startsWith('/') ? `${baseUrl}${path}` : `${baseUrl}/${path}`;
+  }
+};
+
+const absoluteLogoUrl = createAbsoluteUrl(config.logo_path, config.site_url || 'http://localhost:3000');
+const absoluteFaviconUrl = createAbsoluteUrl(config.favicon_path, config.site_url || 'http://localhost:3000');
+
 export const metadata: Metadata = {
   metadataBase: config.site_url ? new URL(config.site_url) : undefined,
   title: {
@@ -19,20 +36,22 @@ export const metadata: Metadata = {
   },
   description: config.site_description,
   authors: config.site_author ? [{ name: config.site_author }] : [],
-  icons: config.favicon_path
+  // Use the generated absolute favicon URL or fallback
+  icons: absoluteFaviconUrl
     ? [
-        { rel: 'icon', url: config.favicon_path, type: 'image/x-icon', sizes: '16x16' },
-        // Add more icon links if needed
+        { rel: 'icon', url: absoluteFaviconUrl, type: 'image/x-icon', sizes: 'any' },
+        // Add more icon links if needed, e.g., apple-touch-icon
       ]
     : [{ rel: 'icon', url: '/favicon.ico', type: 'image/x-icon', sizes: '16x16' }], // Default fallback
   openGraph: {
-    title: config.site_name,
+    title: config.site_name || "DevDocs++", // Use default config if available
     description: config.site_description,
     url: config.site_url,
     siteName: config.site_name,
-    images: config.logo_path ? [
+    // Use the generated absolute logo URL
+    images: absoluteLogoUrl ? [
       {
-        url: config.logo_path.startsWith('http') ? config.logo_path : new URL(config.logo_path, config.site_url || 'http://localhost:3000').toString(), // Use a default base URL
+        url: absoluteLogoUrl,
         width: 800, // Example width, adjust if known
         height: 600, // Example height, adjust if known
         alt: `${config.site_name} Logo`,
@@ -43,9 +62,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: config.site_name,
+    title: config.site_name || "DevDocs++",
     description: config.site_description,
-    images: config.logo_path ? [config.logo_path.startsWith('http') ? config.logo_path : new URL(config.logo_path, config.site_url || 'http://localhost:3000').toString()] : [],
+    // Use the generated absolute logo URL
+    images: absoluteLogoUrl ? [absoluteLogoUrl] : [],
     // Consider adding twitter:creator or twitter:site
   },
 };
@@ -67,10 +87,11 @@ export default function RootLayout({
 }>) {
   return (
     // Added suppressHydrationWarning to <html> tag for next-themes compatibility
-    <html lang="en" suppressHydrationWarning><head /> {/* Ensure head is explicitly included and immediately follows html tag */}
+    <html lang="en" suppressHydrationWarning>
+      <head /> {/* Ensure head is explicitly included */}
       <body
         className={cn(inter.variable, firaCode.variable, 'font-sans antialiased')}
-        suppressHydrationWarning // Keep this here ONLY if browser extensions are known to cause issues
+        // Remove suppressHydrationWarning from body unless specifically needed for browser extensions
       >
         <ThemeProvider
           attribute="class"
@@ -86,4 +107,3 @@ export default function RootLayout({
     </html>
   );
 }
-
