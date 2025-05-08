@@ -474,8 +474,6 @@ nav:
             path: old_docs/core_python/advanced_data_structures
           - title: Object-Oriented Programming
             path: old_docs/core_python/oops
-          - title: Code Optimization
-            path: old_docs/core_python/code_optimization
       - title: Web Development
         path: old_docs/tutorials/web_tut
       - title: AWS
@@ -511,133 +509,17 @@ nav:
           - title: REST API
             path: old_docs/intro/rest_api
           - title: FastAPI Introduction
-            path: old_docs/intro/fastapi_intro
-          - title: FastAPI Topics
             path: old_docs/fastapi_guide_topics
-      - title: Examples
-        children:
-          - title: Basic Application
-            path: old_docs/examples/basic_fastapi
-          - title: In-Memory Database
-            path: old_docs/examples/in_memory_db
-          - title: Raw SQL Database
-            path: old_docs/examples/db_raw_sql
-          - title: Boilerplate Reduction
-            path: old_docs/examples/reduce_boilerplate
-      - title: Database
-        children:
-          - title: SQLAlchemy Introduction
-            path: old_docs/database/sqlalchemy_intro
-          - title: FastAPI with SQLAlchemy
-            path: old_docs/database/sqlalchemy_fastapi
-          - title: SQLAlchemy Best Practices
-            path: old_docs/database/sqlalchemy_usage
-          - title: Pydantic Introduction
-            path: old_docs/database/pydantic_intro
-          - title: Pydantic Integration
-            path: old_docs/database/pydantic_sqlalchemy
-          - title: Pydantic vs SQLAlchemy
-            path: old_docs/database/pydantic_vs_sqlalchemy
-      - title: Async vs Sync
-        children:
-          - title: Execution Models
-            path: old_docs/async/sync_vs_async
-          - title: Database Connections
-            path: old_docs/async/db_connections
-          - title: Engine & Sessions
-            path: old_docs/async/engine_sessions
-      - title: Database Queries
-        children:
-          - title: Overview
-            path: old_docs/database_queries/queries_overview
-          - title: Inserts
-            children:
-              - title: Single Table
-                path: old_docs/database_queries/insert_single_table
-              - title: Two Unrelated Tables
-                path: old_docs/database_queries/insert_two_unrelated
-              - title: Two Related Tables
-                path: old_docs/database_queries/insert_two_related
-              - title: Multiple Unrelated Tables
-                path: old_docs/database_queries/insert_multiple_unrelated
-              - title: Multiple Related Tables
-                path: old_docs/database_queries/insert_multiple_related
-          - title: Fetches
-            children:
-              - title: Single Table
-                path: old_docs/fetch_queries/fetch_single_table
-              - title: Two Unrelated Tables
-                path: old_docs/fetch_queries/fetch_two_unrelated
-              - title: Two Related Tables
-                path: old_docs/fetch_queries/fetch_two_related
-              - title: Multiple Unrelated Tables
-                path: old_docs/fetch_queries/fetch_multiple_unrelated
-              - title: Multiple Related Tables
-                path: old_docs/fetch_queries/fetch_multiple_related
       - title: Tables
         children:
           - title: Table Creation
             path: old_docs/tables/table_creation
           - title: Secure Practices
             path: old_docs/tables/secure_creation
-      - title: Naming Conventions
-        children:
-          - title: Project Structure
-            path: old_docs/naming/project_structure
-          - title: API Routes
-            path: old_docs/naming/api_routes
-          - title: Python Naming
-            path: old_docs/naming/python_naming
       - title: Advanced
         children:
-          - title: Pydantic Settings
-            path: old_docs/advanced/pydantic_settings
-          - title: Request Handling
-            path: old_docs/advanced/request_handling
-          - title: Input/Output Management
-            path: old_docs/advanced/input_output
-          - title: Performance & Security
-            path: old_docs/advanced/performance_security
           - title: Profiling & Memory
             path: old_docs/advanced/profile_memory
-      - title: Best Practices
-        children:
-          - title: Coding Guidelines
-            path: old_docs/best_practices/fastapi_guidelines
-          - title: CRUD Application
-            path: old_docs/best_practices/crud_application
-          - title: CRUD Operations
-            path: old_docs/best_practices/sync_vs_async_crud
-      - title: Utilities
-        children:
-          - title: Essentials
-            path: old_docs/utilities/fastapi_pydantic_sqlalchemy
-          - title: Code Snippets
-            path: old_docs/utilities/code_snippets
-      - title: Web Servers
-        path: old_docs/web_servers/server_comparison
-      - title: WebSockets
-        children:
-          - title: Introduction
-            path: old_docs/websockets/websockets_intro
-          - title: Implementation
-            path: old_docs/websockets/websockets_integration
-      - title: Security
-        children:
-          - title: API Security
-            path: old_docs/security/api_security
-          - title: FastAPI Security
-            path: old_docs/security/fastapi_security
-      - title: Authentication
-        children:
-          - title: Methods
-            path: old_docs/auth/auth_methods
-          - title: FastAPI Authentication
-            path: old_docs/auth/fastapi_authentication
-      - title: Built-in Features
-        path: old_docs/built_in/fastapi_methods
-      - title: Additional Features
-        path: old_docs/additional_features/built_in_utilities
       - title: Deployment
         children:
           - title: Cloud Deployment
@@ -646,8 +528,6 @@ nav:
             path: old_docs/deployment/container_deployment
       - title: Frontend Integration
         path: old_docs/frontend/frontend_integration
-      - title: Advanced SQLAlchemy
-        path: old_docs/advanced_sqlalchemy/advanced_operations
   - title: Testing
     children:
       - title: Functional Testing
@@ -682,14 +562,6 @@ nav:
         path: old_docs/learning_notes/devops/tools
       - title: CI/CD
         children:
-          - title: Overview
-            path: old_docs/learning_notes/ci-cd/overview
-          - title: Workflow
-            path: old_docs/learning_notes/ci-cd/process
-          - title: Tools
-            path: old_docs/learning_notes/ci-cd/tools
-          - title: Pros and Cons
-            path: old_docs/learning_notes/ci-cd/pros-cons
           - title: Notes
             path: old_docs/ci-cd-learn/cicd_notes
           - title: AWS Jenkins Pipeline
@@ -720,8 +592,6 @@ nav:
                 path: old_docs/aws/elastic_beanstalk
           - title: Infrastructure as Code
             children:
-              - title: Terraform
-                path: old_docs/devops_old/03-infrastructure/terraform
               - title: HashiCorp Vault Setup
                 path: old_docs/hcv/vault_setup
       - title: Cloud Native
@@ -730,36 +600,8 @@ nav:
             path: old_docs/cloud_native/helm
           - title: Istio
             path: old_docs/cloud_native/istio
-      - title: Automation
-        children:
-          - title: Jenkins
-            path: old_docs/devops_old/02-automation/jenkins
-          - title: GitHub Actions
-            path: old_docs/devops_old/02-automation/github-actions
-      - title: Monitoring
-        children:
-          - title: ELK Stack
-            path: old_docs/devops_old/04-monitoring/elk-stack
-          - title: Ansible
-            path: old_docs/devops_old/04-monitoring/ansible
-      - title: Advanced Topics
-        children:
-          - title: GitOps with ArgoCD
-            path: old_docs/devops_old/05-advanced/gitops-argocd
-          - title: Microservices
-            path: old_docs/devops_old/05-advanced/microservices
-          - title: RabbitMQ
-            path: old_docs/devops_old/05-advanced/rabbitmq
-      - title: Additional Notes
-        path: old_docs/devops_old/additional-notes
   - title: DevSecOps
     children:
-      - title: Overview
-        path: old_docs/learning_notes/devsecops/overview
-      - title: Security Practices
-        path: old_docs/learning_notes/devsecops/security-practices
-      - title: Tools
-        path: old_docs/learning_notes/devsecops/tools
       - title: Learning Path
         children:
           - title: Fundamentals (0-3 months)
@@ -878,36 +720,6 @@ nav:
             path: old_docs/ai_chat/kong_api_gateway_setup
           - title: Caddy vs Nginx Reverse Proxy
             path: old_docs/ai_chat/caddy_nginx_reverse_proxy
-  - title: Alternative Paradigms
-    children:
-      - title: GitOps
-        path: old_docs/learning_notes/alternatives/gitops
-      - title: NoOps
-        path: old_docs/learning_notes/alternatives/noops
-      - title: Platform Engineering
-        path: old_docs/learning_notes/alternatives/platform-engineering
-      - title: MLOps
-        path: old_docs/learning_notes/alternatives/mlops
-      - title: DataOps
-        path: old_docs/learning_notes/alternatives/dataops
-      - title: FinOps
-        path: old_docs/learning_notes/alternatives/finops
-  - title: Additional Concepts
-    children:
-      - title: Observability
-        path: old_docs/learning_notes/additional-concepts/observability
-      - title: Progressive Delivery
-        path: old_docs/learning_notes/additional-concepts/progressive-delivery
-      - title: Value Stream Management
-        path: old_docs/learning_notes/additional-concepts/value-stream-management
-      - title: Policy as Code
-        path: old_docs/learning_notes/additional-concepts/policy-as-code
-      - title: Chaos Engineering
-        path: old_docs/learning_notes/additional-concepts/chaos-engineering
-      - title: Site Reliability Engineering
-        path: old_docs/learning_notes/additional-concepts/sre
-  - title: Blog
-    path: old_docs/blog/index
   - title: Changelog
     path: old_docs/changelog
   - title: About
