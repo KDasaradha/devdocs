@@ -1,0 +1,80 @@
+<footer class="md-footer">
+    <!-- Navigation Section -->
+    <nav class="md-footer-nav">
+        <div class="md-footer-nav__inner">
+            {% if page.previous_page %}
+            <a href="{{ page.previous_page.url | url }}" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+                <i class="fas fa-arrow-left"></i>
+                <span>{{ page.previous_page.title }}</span>
+            </a>
+            {% endif %}
+            {% if page.next_page %}
+            <a href="{{ page.next_page.url | url }}" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+                <span>{{ page.next_page.title }}</span>
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Meta Section -->
+    <div class="md-footer-meta">
+        <div class="md-footer-meta__inner">
+            <div class="md-footer-copyright">
+                &copy; {% if config.copyright %}{{ config.copyright }}{% else %}2025 KDasaradha{% endif %}
+            </div>
+            <div class="md-footer-social">
+                <a href="https://github.com/KDasaradha" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="mailto:kdasaradha525@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+                <a href="https://kdasaradha525.vercel.app" title="Portfolio"><i class="fas fa-globe"></i></a>
+                <a href="https://www.linkedin.com/in/dasaradha-rami-reddy-kesari-b8471417b" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    .md-footer {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .md-footer-nav__inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .md-footer-nav__link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .md-footer-meta__inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 0.5rem;
+    }
+
+    .md-footer-social a {
+        margin: 0 0.3rem;
+        font-size: 1rem;
+        opacity: 0.7;
+        transition: opacity 0.25s;
+    }
+
+    .md-footer-social a:hover {
+        opacity: 1;
+    }
+
+    .md-footer-copyright {
+        font-size: 0.75rem;
+    }
+</style>

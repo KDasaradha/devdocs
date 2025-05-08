@@ -432,6 +432,496 @@ nav:
         path: css/pro
       - title: Hidden Gems
         path: css/hidden-gems
+  - title: Getting Started
+    children:
+      - title: Introduction
+        path: old_docs/overview/getting-started
+      - title: FastAPI Guidelines
+        path: old_docs/overview/fastapi-guide-info
+      - title: HTML Indian Flag
+        path: old_docs/overview/html_indian_flag
+      - title: HTTP Status Codes
+        path: old_docs/overview/http_status_codes
+      - title: Skills
+        children:
+          - title: General Skill Set
+            path: old_docs/skill_set
+          - title: Backend Skills
+            path: old_docs/backend_skills_set
+          - title: AI Tools
+            path: old_docs/ai_tools
+  - title: Tutorials
+    children:
+      - title: Python
+        children:
+          - title: Basics
+            path: old_docs/tutorials/python_tut
+          - title: Data Analysis
+            path: old_docs/tutorials/python_data_analyst_tut
+          - title: Tools
+            path: old_docs/tutorials/python_tools
+          - title: Testing
+            path: old_docs/tutorials/python_testing
+      - title: Core Python
+        children:
+          - title: Functions & Classes
+            path: old_docs/core_python/function_class
+          - title: Decorators
+            path: old_docs/core_python/decorators
+          - title: Error Handling
+            path: old_docs/core_python/error_handling
+          - title: Data Structures
+            path: old_docs/core_python/advanced_data_structures
+          - title: Object-Oriented Programming
+            path: old_docs/core_python/oops
+          - title: Code Optimization
+            path: old_docs/core_python/code_optimization
+      - title: Web Development
+        path: old_docs/tutorials/web_tut
+      - title: AWS
+        path: old_docs/tutorials/aws_tut
+      - title: DevSecOps
+        path: old_docs/tutorials/devsecops_tut
+      - title: Containerization
+        children:
+          - title: Docker & Kubernetes Roadmap
+            path: old_docs/tutorials/docker_kubernetes_roadmap
+          - title: Docker
+            path: old_docs/tutorials/docker_tut
+          - title: Kubernetes
+            path: old_docs/tutorials/kubernetes_tut
+      - title: Version Control
+        children:
+          - title: Git Roadmap
+            path: old_docs/tutorials/git_roadmap
+          - title: Git Tutorial
+            path: old_docs/tutorials/git_tut
+      - title: Trending Technologies
+        path: old_docs/tutorials/trending_tech_stack
+      - title: Contributing Guidelines
+        path: old_docs/tutorials/contributing
+  - title: FastAPI
+    children:
+      - title: Guides
+        children:
+          - title: Introduction to APIs
+            path: old_docs/intro/api
+          - title: API Types
+            path: old_docs/intro/api_types
+          - title: REST API
+            path: old_docs/intro/rest_api
+          - title: FastAPI Introduction
+            path: old_docs/intro/fastapi_intro
+          - title: FastAPI Topics
+            path: old_docs/fastapi_guide_topics
+      - title: Examples
+        children:
+          - title: Basic Application
+            path: old_docs/examples/basic_fastapi
+          - title: In-Memory Database
+            path: old_docs/examples/in_memory_db
+          - title: Raw SQL Database
+            path: old_docs/examples/db_raw_sql
+          - title: Boilerplate Reduction
+            path: old_docs/examples/reduce_boilerplate
+      - title: Database
+        children:
+          - title: SQLAlchemy Introduction
+            path: old_docs/database/sqlalchemy_intro
+          - title: FastAPI with SQLAlchemy
+            path: old_docs/database/sqlalchemy_fastapi
+          - title: SQLAlchemy Best Practices
+            path: old_docs/database/sqlalchemy_usage
+          - title: Pydantic Introduction
+            path: old_docs/database/pydantic_intro
+          - title: Pydantic Integration
+            path: old_docs/database/pydantic_sqlalchemy
+          - title: Pydantic vs SQLAlchemy
+            path: old_docs/database/pydantic_vs_sqlalchemy
+      - title: Async vs Sync
+        children:
+          - title: Execution Models
+            path: old_docs/async/sync_vs_async
+          - title: Database Connections
+            path: old_docs/async/db_connections
+          - title: Engine & Sessions
+            path: old_docs/async/engine_sessions
+      - title: Database Queries
+        children:
+          - title: Overview
+            path: old_docs/database_queries/queries_overview
+          - title: Inserts
+            children:
+              - title: Single Table
+                path: old_docs/database_queries/insert_single_table
+              - title: Two Unrelated Tables
+                path: old_docs/database_queries/insert_two_unrelated
+              - title: Two Related Tables
+                path: old_docs/database_queries/insert_two_related
+              - title: Multiple Unrelated Tables
+                path: old_docs/database_queries/insert_multiple_unrelated
+              - title: Multiple Related Tables
+                path: old_docs/database_queries/insert_multiple_related
+          - title: Fetches
+            children:
+              - title: Single Table
+                path: old_docs/fetch_queries/fetch_single_table
+              - title: Two Unrelated Tables
+                path: old_docs/fetch_queries/fetch_two_unrelated
+              - title: Two Related Tables
+                path: old_docs/fetch_queries/fetch_two_related
+              - title: Multiple Unrelated Tables
+                path: old_docs/fetch_queries/fetch_multiple_unrelated
+              - title: Multiple Related Tables
+                path: old_docs/fetch_queries/fetch_multiple_related
+      - title: Tables
+        children:
+          - title: Table Creation
+            path: old_docs/tables/table_creation
+          - title: Secure Practices
+            path: old_docs/tables/secure_creation
+      - title: Naming Conventions
+        children:
+          - title: Project Structure
+            path: old_docs/naming/project_structure
+          - title: API Routes
+            path: old_docs/naming/api_routes
+          - title: Python Naming
+            path: old_docs/naming/python_naming
+      - title: Advanced
+        children:
+          - title: Pydantic Settings
+            path: old_docs/advanced/pydantic_settings
+          - title: Request Handling
+            path: old_docs/advanced/request_handling
+          - title: Input/Output Management
+            path: old_docs/advanced/input_output
+          - title: Performance & Security
+            path: old_docs/advanced/performance_security
+          - title: Profiling & Memory
+            path: old_docs/advanced/profile_memory
+      - title: Best Practices
+        children:
+          - title: Coding Guidelines
+            path: old_docs/best_practices/fastapi_guidelines
+          - title: CRUD Application
+            path: old_docs/best_practices/crud_application
+          - title: CRUD Operations
+            path: old_docs/best_practices/sync_vs_async_crud
+      - title: Utilities
+        children:
+          - title: Essentials
+            path: old_docs/utilities/fastapi_pydantic_sqlalchemy
+          - title: Code Snippets
+            path: old_docs/utilities/code_snippets
+      - title: Web Servers
+        path: old_docs/web_servers/server_comparison
+      - title: WebSockets
+        children:
+          - title: Introduction
+            path: old_docs/websockets/websockets_intro
+          - title: Implementation
+            path: old_docs/websockets/websockets_integration
+      - title: Security
+        children:
+          - title: API Security
+            path: old_docs/security/api_security
+          - title: FastAPI Security
+            path: old_docs/security/fastapi_security
+      - title: Authentication
+        children:
+          - title: Methods
+            path: old_docs/auth/auth_methods
+          - title: FastAPI Authentication
+            path: old_docs/auth/fastapi_authentication
+      - title: Built-in Features
+        path: old_docs/built_in/fastapi_methods
+      - title: Additional Features
+        path: old_docs/additional_features/built_in_utilities
+      - title: Deployment
+        children:
+          - title: Cloud Deployment
+            path: old_docs/deployment/cloud_deployment
+          - title: Container Deployment
+            path: old_docs/deployment/container_deployment
+      - title: Frontend Integration
+        path: old_docs/frontend/frontend_integration
+      - title: Advanced SQLAlchemy
+        path: old_docs/advanced_sqlalchemy/advanced_operations
+  - title: Testing
+    children:
+      - title: Functional Testing
+        path: old_docs/pytests_tutorial/functional_pytests
+      - title: SQLite Sync
+        path: old_docs/pytests_tutorial/sync_fastapi_sqlite
+      - title: SQLAlchemy Sync
+        path: old_docs/pytests_tutorial/sync_fastapi_sqlalchemy
+      - title: SQLAlchemy Async
+        path: old_docs/pytests_tutorial/async_fastapi_sqlalchemy
+      - title: Pytest Commands
+        path: old_docs/pytests_tutorial/pytests_commands
+      - title: Test Cases
+        path: old_docs/pytests_tutorial/test_cases
+      - title: HTTP Method Tests
+        path: old_docs/pytests_tutorial/http_method_test_cases
+      - title: Implementation Guides
+        children:
+          - title: Sync Testing
+            path: old_docs/pytests_tutorial/sync_test_implementation
+          - title: Async Testing
+            path: old_docs/pytests_tutorial/async_test_implementation
+  - title: DevOps
+    children:
+      - title: Overview
+        path: old_docs/learning_notes/devops/overview
+      - title: Core Principles
+        path: old_docs/learning_notes/devops/principles
+      - title: Lifecycle Stages
+        path: old_docs/learning_notes/devops/stages
+      - title: Tools
+        path: old_docs/learning_notes/devops/tools
+      - title: CI/CD
+        children:
+          - title: Overview
+            path: old_docs/learning_notes/ci-cd/overview
+          - title: Workflow
+            path: old_docs/learning_notes/ci-cd/process
+          - title: Tools
+            path: old_docs/learning_notes/ci-cd/tools
+          - title: Pros and Cons
+            path: old_docs/learning_notes/ci-cd/pros-cons
+          - title: Notes
+            path: old_docs/ci-cd-learn/cicd_notes
+          - title: AWS Jenkins Pipeline
+            path: old_docs/ci-cd-learn/aws_jenkins_pipeline
+          - title: FastAPI CI/CD Pipeline
+            path: old_docs/ci-cd-learn/fastapi_jenkins_pipeline
+      - title: Containerization
+        children:
+          - title: Docker Compose
+            path: old_docs/ci-cd-learn/docker_compose
+          - title: Docker Tutorial
+            path: old_docs/tech_tutorials/docker_tut/basics
+          - title: Kubernetes Tutorial
+            path: old_docs/tech_tutorials/kubernetes_tut/basics
+      - title: Infrastructure
+        children:
+          - title: AWS
+            children:
+              - title: Introduction
+                path: old_docs/aws/aws_intro
+              - title: Beginner Guide
+                path: old_docs/aws/aws_beginner
+              - title: IAM
+                path: old_docs/aws/aws_iam
+              - title: S3
+                path: old_docs/aws/aws_s3
+              - title: Elastic Beanstalk
+                path: old_docs/aws/elastic_beanstalk
+          - title: Infrastructure as Code
+            children:
+              - title: Terraform
+                path: old_docs/devops_old/03-infrastructure/terraform
+              - title: HashiCorp Vault Setup
+                path: old_docs/hcv/vault_setup
+      - title: Cloud Native
+        children:
+          - title: Helm
+            path: old_docs/cloud_native/helm
+          - title: Istio
+            path: old_docs/cloud_native/istio
+      - title: Automation
+        children:
+          - title: Jenkins
+            path: old_docs/devops_old/02-automation/jenkins
+          - title: GitHub Actions
+            path: old_docs/devops_old/02-automation/github-actions
+      - title: Monitoring
+        children:
+          - title: ELK Stack
+            path: old_docs/devops_old/04-monitoring/elk-stack
+          - title: Ansible
+            path: old_docs/devops_old/04-monitoring/ansible
+      - title: Advanced Topics
+        children:
+          - title: GitOps with ArgoCD
+            path: old_docs/devops_old/05-advanced/gitops-argocd
+          - title: Microservices
+            path: old_docs/devops_old/05-advanced/microservices
+          - title: RabbitMQ
+            path: old_docs/devops_old/05-advanced/rabbitmq
+      - title: Additional Notes
+        path: old_docs/devops_old/additional-notes
+  - title: DevSecOps
+    children:
+      - title: Overview
+        path: old_docs/learning_notes/devsecops/overview
+      - title: Security Practices
+        path: old_docs/learning_notes/devsecops/security-practices
+      - title: Tools
+        path: old_docs/learning_notes/devsecops/tools
+      - title: Learning Path
+        children:
+          - title: Fundamentals (0-3 months)
+            path: old_docs/tech_tutorials/devsecops_tut/fundamentals
+          - title: Intermediate (3-6 months)
+            children:
+              - title: Version Control Security
+                path: old_docs/tech_tutorials/devsecops_tut/version_control
+              - title: CI/CD Pipeline Security
+                path: old_docs/tech_tutorials/devsecops_tut/cicd_pipeline_security
+              - title: Container Security
+                path: old_docs/tech_tutorials/devsecops_tut/container_security
+              - title: Cloud Security
+                path: old_docs/tech_tutorials/devsecops_tut/cloud_security_compliance
+          - title: Advanced (6-12 months)
+            children:
+              - title: Security Testing
+                path: old_docs/tech_tutorials/devsecops_tut/security_testing_automation
+              - title: IaC Security
+                path: old_docs/tech_tutorials/devsecops_tut/iac_security
+              - title: Secrets Management
+                path: old_docs/tech_tutorials/devsecops_tut/secrets_management
+              - title: Incident Response
+                path: old_docs/tech_tutorials/devsecops_tut/security_incident_response
+          - title: Expert (12+ months)
+            children:
+              - title: Threat Modeling
+                path: old_docs/tech_tutorials/devsecops_tut/threat_modeling
+              - title: Compliance & Governance
+                path: old_docs/tech_tutorials/devsecops_tut/compliance_governance
+              - title: Red Teaming
+                path: old_docs/tech_tutorials/devsecops_tut/red_teaming
+              - title: Kubernetes Security
+                path: old_docs/tech_tutorials/devsecops_tut/kubernetes_cloud_security
+  - title: Application Architecture
+    children:
+      - title: Requirements
+        path: old_docs/architectures/requirements
+      - title: Architecture Types
+        path: old_docs/architectures/types
+      - title: Architectures
+        children:
+          - title: Monolithic
+            path: old_docs/architectures/monolithic
+          - title: Layered Monolith
+            path: old_docs/architectures/layered
+          - title: Microservices
+            path: old_docs/architectures/microservices
+          - title: Service-Oriented Architecture
+            path: old_docs/architectures/soa
+          - title: Event-Driven Architecture
+            path: old_docs/architectures/eda
+          - title: Event-Driven Hexagonal
+            path: old_docs/architectures/event-driven-hexagonal
+      - title: Recommended Architectures
+        children:
+          - title: Event-Driven Hexagonal
+            path: old_docs/architectures/recommended/event-driven-hexagonal
+          - title: Layered Monolith
+            path: old_docs/architectures/recommended/layered-monolith
+          - title: Microservices
+            path: old_docs/architectures/recommended/microservices
+      - title: Folder Structures
+        children:
+          - title: Monolithic
+            path: old_docs/architectures/folder-structures/monolith
+          - title: Microservices
+            path: old_docs/architectures/folder-structures/microservices
+          - title: Service-Oriented Architecture
+            path: old_docs/architectures/folder-structures/soa
+          - title: Event-Driven Architecture
+            path: old_docs/architectures/folder-structures/eda
+          - title: Event-Driven Hexagonal
+            path: old_docs/architectures/folder-structures/event-driven-hexagonal
+          - title: Layered Monolith
+            path: old_docs/architectures/folder-structures/layered-monolith
+      - title: Software Principles
+        children:
+          - title: Overview
+            path: old_docs/architectures/principles/principles
+          - title: SOLID
+            path: old_docs/architectures/principles/solid
+          - title: DRY
+            path: old_docs/architectures/principles/dry
+          - title: KISS
+            path: old_docs/architectures/principles/kiss
+          - title: YAGNI
+            path: old_docs/architectures/principles/yagni
+          - title: Separation of Concerns
+            path: old_docs/architectures/principles/soc
+          - title: Law of Demeter
+            path: old_docs/architectures/principles/lod
+      - title: Image Prompts
+        path: old_docs/architectures/image-prompts
+      - title: ASCII Diagrams
+        path: old_docs/architectures/canvas-prompts
+  - title: AI Chat Notes
+    children:
+      - title: ChatGPT
+        children:
+          - title: CI/CD Enhancements
+            path: old_docs/ai_chat/pipeline_next_level
+          - title: GitHub Actions CI/CD
+            path: old_docs/ai_chat/pipeline_full_github_actions
+          - title: Production CI/CD Setup
+            path: old_docs/ai_chat/pipeline_full_production
+          - title: FastAPI CI/CD Pipeline
+            path: old_docs/ai_chat/pipeline_github_actions
+          - title: Terraform Setup
+            path: old_docs/ai_chat/terraform_setup_guidelines
+      - title: Grok
+        children:
+          - title: Kong API Gateway Introduction
+            path: old_docs/ai_chat/kong_api_gateway_intro
+          - title: Kong API Gateway Setup
+            path: old_docs/ai_chat/kong_api_gateway_setup
+          - title: Caddy vs Nginx Reverse Proxy
+            path: old_docs/ai_chat/caddy_nginx_reverse_proxy
+  - title: Alternative Paradigms
+    children:
+      - title: GitOps
+        path: old_docs/learning_notes/alternatives/gitops
+      - title: NoOps
+        path: old_docs/learning_notes/alternatives/noops
+      - title: Platform Engineering
+        path: old_docs/learning_notes/alternatives/platform-engineering
+      - title: MLOps
+        path: old_docs/learning_notes/alternatives/mlops
+      - title: DataOps
+        path: old_docs/learning_notes/alternatives/dataops
+      - title: FinOps
+        path: old_docs/learning_notes/alternatives/finops
+  - title: Additional Concepts
+    children:
+      - title: Observability
+        path: old_docs/learning_notes/additional-concepts/observability
+      - title: Progressive Delivery
+        path: old_docs/learning_notes/additional-concepts/progressive-delivery
+      - title: Value Stream Management
+        path: old_docs/learning_notes/additional-concepts/value-stream-management
+      - title: Policy as Code
+        path: old_docs/learning_notes/additional-concepts/policy-as-code
+      - title: Chaos Engineering
+        path: old_docs/learning_notes/additional-concepts/chaos-engineering
+      - title: Site Reliability Engineering
+        path: old_docs/learning_notes/additional-concepts/sre
+  - title: Blog
+    path: old_docs/blog/index
+  - title: Changelog
+    path: old_docs/changelog
+  - title: About
+    children:
+      - title: License
+        path: old_docs/about/license
+      - title: Contributing
+        path: old_docs/about/contributing
+      - title: Contact
+        path: old_docs/about/contact
+  - title: Error
+    children:
+      - title: Custom 404
+        path: old_docs/custom_404
 
 # Theme Configuration
 theme:

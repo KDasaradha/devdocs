@@ -1,0 +1,140 @@
+/* ================================
+   General Theme Enhancements
+   ================================ */
+   :root {
+    --border-radius: 8px;
+    --transition-speed: 0.3s ease-in-out;
+}
+
+/* ================================
+   Light Theme (Default)
+   ================================ */
+[data-md-color-scheme="default"] {
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --link-color: #007bff;
+    --nav-background: #5e9fdf;
+    --sidebar-background: #b5e7a3;
+    --code-bg: #f4f4f4;
+    --code-color: #d63384;
+    --button-bg: #007bff;
+    --button-text: #ffffff;
+}
+
+/* ================================
+   Dark Theme
+   ================================ */
+[data-md-color-scheme="slate"] {
+    --background-color: #1e1e1e;
+    --text-color: #e0e0e0;
+    --link-color: #4a90e2;
+    --nav-background: #d99b20;
+    --sidebar-background: #08955f;
+    --code-bg: #2d2d2d;
+    --code-color: #ff79c6;
+    --button-bg: #4a90e2;
+    --button-text: #ffffff;
+}
+
+/* ================================
+   Global Layout Styling
+   ================================ */
+body {
+    background: var(--background-color);
+    color: var(--text-color);
+    transition: background var(--transition-speed), color var(--transition-speed);
+}
+
+/* Typography */
+.md-typeset {
+    font-size: 18px;
+    line-height: 1.8;
+    font-family: "Lora", serif;
+}
+
+/* Links */
+.md-typeset a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color var(--transition-speed);
+}
+
+.md-typeset a:hover {
+    text-decoration: underline;
+}
+
+/* ================================
+   Sidebar Styling
+   ================================ */
+.md-sidebar {
+    background: var(--sidebar-background);
+    transition: background var(--transition-speed);
+}
+
+/* Sidebar Links */
+.md-nav__link {
+    font-size: 16px;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    transition: background var(--transition-speed), transform var(--transition-speed);
+}
+
+.md-nav__link:hover {
+    background: rgba(20, 111, 203, 0.1);
+    transform: scale(1.05);
+}
+
+/* Active Link */
+.md-nav__item--active > .md-nav__link {
+    background: var(--link-color);
+    color: #ffffff;
+}
+
+/* ================================
+   Code Blocks
+   ================================ */
+.md-typeset pre, .md-typeset code {
+    background: var(--code-bg);
+    color: var(--code-color);
+    font-family: "Fira Code", monospace;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    transition: background var(--transition-speed), color var(--transition-speed);
+}
+
+/* ================================
+   Tables
+   ================================ */
+.md-typeset table {
+    width: 100%;
+    font-size: 17px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: var(--border-radius);
+}
+
+.md-typeset table th {
+    background: var(--link-color);
+    color: white;
+    padding: 10px;
+}
+
+/* ================================
+   Buttons
+   ================================ */
+.md-button {
+    background: var(--button-bg);
+    color: var(--button-text);
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: var(--border-radius);
+    transition: background var(--transition-speed), transform var(--transition-speed);
+}
+
+.md-button:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}

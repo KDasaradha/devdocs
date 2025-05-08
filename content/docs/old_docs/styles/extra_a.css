@@ -1,0 +1,198 @@
+/* ================================
+   Global Theme Variables
+   ================================ */
+   :root {
+    /* Light Theme Variables */
+    --md-text-color-light: #333; /* Improved readability */
+    --md-heading-color-light: #222;
+    --md-link-color-light: #007bff;
+    --md-bg-light: #ffffff;
+    --md-code-bg-light: #f8f9fa;
+    --md-code-color-light: #d63384;
+
+    /* Dark Theme Variables */
+    --md-text-color-dark: #ddd;
+    --md-heading-color-dark: #fff;
+    --md-link-color-dark: #66b3ff;
+    --md-bg-dark: #121212;
+    --md-code-bg-dark: rgba(99, 110, 123, 0.4);
+    --md-code-color-dark: #ff7eb6;
+}
+
+/* ================================
+   General Readability Improvements
+   ================================ */
+.md-content, .md-typeset {
+    font-size: 17px;
+    line-height: 1.8;
+    font-family: "Lora", "Georgia", "Times New Roman", serif;
+}
+
+/* ================================
+   Code Blocks
+   ================================ */
+.md-typeset pre, .md-typeset code {
+    font-family: "Fira Code", "Courier New", monospace;
+    font-size: 15px;
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Light Theme Code Blocks */
+[data-md-color-scheme="default"] .md-typeset pre, 
+[data-md-color-scheme="default"] .md-typeset code {
+    background-color: var(--md-code-bg-light);
+    color: var(--md-code-color-light);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme Code Blocks */
+[data-md-color-scheme="slate"] .md-typeset pre, 
+[data-md-color-scheme="slate"] .md-typeset code {
+    background-color: var(--md-code-bg-dark);
+    color: var(--md-code-color-dark);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ================================
+   Inline Code Highlighting
+   ================================ */
+:root .md-typeset code {
+    background-color: rgba(27, 31, 35, 0.1) !important;
+    color: var(--md-code-color-light) !important;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+
+/* Dark Mode */
+[data-md-color-scheme="slate"] .md-typeset code {
+    background-color: var(--md-code-bg-dark);
+    color: var(--md-code-color-dark);
+}
+
+/* ================================
+   Navigation & Sidebar
+   ================================ */
+.md-sidebar {
+    width: 300px;
+}
+
+/* Light Theme Sidebar */
+[data-md-color-scheme="default"] .md-nav {
+    background-color: #f8f9fa;
+}
+
+[data-md-color-scheme="default"] .md-nav__link {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    padding: 10px 15px;
+    transition: background 0.3s ease;
+}
+
+[data-md-color-scheme="default"] .md-nav__link:hover {
+    background-color: #e9ecef;
+    color: #0056b3;
+    border-radius: 5px;
+}
+
+/* Dark Theme Sidebar */
+[data-md-color-scheme="slate"] .md-nav {
+    background-color: #1c1f26;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ddd;
+    padding: 10px 15px;
+    transition: background 0.3s ease;
+}
+
+[data-md-color-scheme="slate"] .md-nav__link:hover {
+    background-color: #2a2d36;
+    color: #66b3ff;
+    border-radius: 5px;
+}
+
+/* ================================
+   Blockquotes
+   ================================ */
+.md-typeset blockquote {
+    font-style: italic;
+    padding-left: 10px;
+    border-left: 4px solid;
+}
+
+/* Light Theme Blockquotes */
+[data-md-color-scheme="default"] .md-typeset blockquote {
+    border-color: #007bff;
+    color: #555;
+}
+
+/* Dark Theme Blockquotes */
+[data-md-color-scheme="slate"] .md-typeset blockquote {
+    border-color: #66b3ff;
+    color: #bbb;
+}
+
+/* ================================
+   Tables
+   ================================ */
+.md-typeset table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 16px;
+}
+
+/* Light Theme Tables */
+[data-md-color-scheme="default"] .md-typeset table th {
+    background-color: #007bff;
+    color: white;
+}
+
+[data-md-color-scheme="default"] .md-typeset table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+/* Dark Theme Tables */
+[data-md-color-scheme="slate"] .md-typeset table th {
+    background-color: #0056b3;
+    color: #ffffff;
+}
+
+[data-md-color-scheme="slate"] .md-typeset table td {
+    border: 1px solid #444;
+    padding: 10px;
+}
+
+/* ================================
+   Buttons & Hover Effects
+   ================================ */
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Dark Theme Buttons */
+[data-md-color-scheme="slate"] button {
+    background-color: #66b3ff;
+    color: #121212;
+}
+
+[data-md-color-scheme="slate"] button:hover {
+    background-color: #99ccff;
+}

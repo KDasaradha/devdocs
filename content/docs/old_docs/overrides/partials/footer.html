@@ -1,0 +1,128 @@
+<footer class="md-footer">
+    <!-- Navigation Section -->
+    <nav class="md-footer-nav">
+        <div class="md-footer-nav__inner md-grid">
+            {% if page.previous_page %}
+            <a href="{{ page.previous_page.url | url }}" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+                <div class="md-footer-nav__button md-icon">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <div class="md-footer-nav__title">
+                    <span class="md-footer-nav__text">{{ page.previous_page.title }}</span>
+                </div>
+            </a>
+            {% endif %}
+            {% if page.next_page %}
+            <a href="{{ page.next_page.url | url }}" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+                <div class="md-footer-nav__title">
+                    <span class="md-footer-nav__text">{{ page.next_page.title }}</span>
+                </div>
+                <div class="md-footer-nav__button md-icon">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Meta Section -->
+    <div class="md-footer-meta md-typeset">
+        <div class="md-footer-meta__inner md-grid">
+            <div class="md-footer-copyright">
+                {% if config.copyright %}{{ config.copyright }}{% else %}2025 KDasaradha. All rights reserved.{% endif %}
+                Made with ❤️ using 
+                <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+                    MkDocs Material.
+                </a>
+            </div>
+            <div class="md-footer-social">
+                <a href="https://github.com/KDasaradha" target="_blank" rel="noopener" title="GitHub" class="md-footer-social__link">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="mailto:kdasaradha525@gmail.com" target="_blank" rel="noopener" title="Email" class="md-footer-social__link">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="https://kdasaradha525.vercel.app" target="_blank" rel="noopener" title="Portfolio" class="md-footer-social__link">
+                    <i class="fas fa-globe"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/dasaradha-rami-reddy-kesari-b8471417b" target="_blank" rel="noopener" title="LinkedIn" class="md-footer-social__link">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Add FontAwesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    /* Social Links Styling */
+    .md-footer-social__link {
+        margin: 0 0.5rem;
+        opacity: 0.7;
+        transition: opacity 0.25s;
+    }
+    .md-footer-social__link:hover {
+        opacity: 1;
+    }
+
+    /* Navigation Section Styling */
+    .md-footer-nav__inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .md-footer-nav__link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        transition: background 0.3s ease-in-out;
+        color: var(--md-footer-fg-color);
+    }
+
+    .md-footer-nav__link--prev {
+        justify-content: flex-start;
+    }
+
+    .md-footer-nav__link--next {
+        justify-content: flex-end;
+    }
+
+    .md-footer-nav__link:hover {
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    [data-md-color-scheme="slate"] .md-footer-nav__link:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Navigation Button Styling */
+    .md-footer-nav__button {
+        font-size: 1.2rem;
+        padding: 0 0.5rem;
+    }
+
+    /* Text Styling with Transparent Background */
+    .md-footer-nav__text {
+        font-size: 0.8rem;
+        font-weight: bold;
+        background: transparent;
+        padding: 0 0.5rem;
+    }
+
+    /* Direction Label */
+    .md-footer-nav__direction {
+        font-size: 1rem;
+        color: var(--md-footer-fg-color--light);
+    }
+
+    /* Copyright Text */
+    .md-footer-copyright {
+        color: var(--md-footer-fg-color--light);
+        font-size: 0.8rem;
+    }
+</style>
