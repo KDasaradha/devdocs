@@ -1,24 +1,37 @@
 # Project Information
-site_name: DevDocs++
-site_full_name: Comprehensive Technology Documentation
-site_description: A unified guide covering FastAPI, Application Architecture, DevOps, DevSecOps, CI/CD, and related software engineering practices.
-site_author: KDasaradha525
-site_url: https://night-fury.vercel.app/ # Use the actual deployment URL when available
+site:
+ name: DevDocs++
+ full_name: Comprehensive Technology Documentation
+ description: A unified guide covering FastAPI, Application Architecture, DevOps, DevSecOps, CI/CD, and related software engineering practices.
+ author: KDasaradha
+ url: https://night-fury.vercel.app
 
 # Repository Information
-repo_name: KDasaradha/devdocs
-repo_url: https://github.com/KDasaradha/devdocs # Ensure this matches the correct repo
-edit_uri: blob/main/content/docs/ # Ensure this points to the markdown files location
+repo:
+ name: devdocs
+ url: https://github.com/KDasaradha/devdocs
+ edit_uri: edit/main/docs/
 
 # Copyright Information
-copyright: "© 2025 KDasaradha525. All rights reserved."
+copyright:
+ Copyright: © 2025 KDasaradha. All rights reserved.
 
 # Assets - paths relative to public directory
 # Assumes files are in public/assets/
-logo_path: /assets/toothless_logo.jpg # Updated path
-favicon_path: /assets/toothless_icon.ico # Updated path
+assets:
+ logo: assets/toothless_logo.jpg
+ favicon: assets/toothless_icon.ico
 
-# Navigation Structure
+social:
+  - icon: fontawesome/brands/github
+    link: https://github.com/KDasaradha
+  - icon: fontawesome/solid/envelope
+    link: mailto:kdasaradha525@gmail.com
+  - icon: fontawesome/brands/linkedin
+    link: https://www.linkedin.com/in/dasaradha-rami-reddy-kesari-b8471417b
+error_pages:
+ 404_page: custom_404.md
+
 nav:
   - title: Home
     path: index

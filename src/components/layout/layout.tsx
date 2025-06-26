@@ -114,7 +114,7 @@ export function Layout({ config, document, children }: LayoutProps) {
         <footer className="py-6 md:px-8 md:py-0 border-t bg-muted/30">
           <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row max-w-screen-2xl">
             <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
-              {copyright || `Built by You. Powered by DevDocs++`}
+              {config.copyright.copyright || `Built by You. Powered by DevDocs++`}
             </p>
             {config.repo_url && (
               <a

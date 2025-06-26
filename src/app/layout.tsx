@@ -88,11 +88,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // Added suppressHydrationWarning to <html> tag for next-themes compatibility
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       {/* Ensure head is explicitly included and is empty, Next.js handles metadata */}
       <head />
-      {/* Added suppressHydrationWarning to body for browser extensions and hydration issues */}
       <body
         className='font-sans antialiased'
       >

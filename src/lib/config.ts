@@ -1,10 +1,30 @@
-import fs from 'fs';
-import path from 'path';
 import yaml from 'js-yaml';
-import type { SiteConfig, NavItemConfig } from '@/types';
+import type { NavItemConfig } from '@/types';
+import fs from 'fs';
+
+
+import path from 'path';
+
+// Define the shape of the config based on config.yml
+interface SiteConfig {
+ site: {
+ name: string;
+ full_name: string;
+ description: string;
+ author: string;
+ url: string;
+    };
+ repo: { name: string; url: string; edit_uri: string; };
+ copyright: { copyright: string };
+ assets: { logo: string; favicon: string; };
+ nav: NavItemConfig[];
+ social: { icon: string; link: string }[];
+ error_pages: { '404_page': string };
+ theme: { default: string; options: string[] };
+ search: { enabled: boolean };
+}
 
 const configFilePath = path.join(process.cwd(), 'public', 'config.yml');
-
 // Singleton pattern for config cache
 let configCache: SiteConfig | null = null;
 let loadError: Error | null = null;
@@ -53,19 +73,21 @@ const normalizeNavPaths = (navItems: NavItemConfig[]): NavItemConfig[] => {
 
 // Default configuration in case of loading errors
 const getDefaultConfig = (): SiteConfig => ({
-  site_name: "DevDocs++ (Error)",
-  site_description: "Error loading configuration.",
-  site_author: "",
-  site_url: "",
-  repo_name: "",
-  repo_url: "",
-  edit_uri: "",
-  copyright: `© ${new Date().getFullYear()} DevDocs++`,
-  logo_path: "", // Default empty string
-  favicon_path: "", // Default empty string
-  nav: [{ title: "Home", path: "index" }],
-  theme: { default: "system", options: ["light", "dark"] },
-  search: { enabled: false },
+ site: {
+ name: "DevDocs++ (Error)",
+ full_name: "Comprehensive Technology Documentation",
+ description: "Error loading configuration.",
+ author: "",
+ url: "",
+    },
+ repo: { name: "", url: "", edit_uri: "" },
+ copyright: { copyright: `© ${new Date().getFullYear()} DevDocs++` },
+ assets: { logo: "", favicon: "" },
+ nav: [{ title: "Home", path: "index" }],
+ social: [], // Default to empty array for social links
+ error_pages: { '404_page': '' }, // Default empty for error pages
+  // logo_path: "", // Default empty string
+ theme: { default: "system", options: ["light", "dark"] }, search: { enabled: true }
 });
 
 export function loadConfig(): SiteConfig {
@@ -80,9 +102,7 @@ export function loadConfig(): SiteConfig {
   }
 
   try {
-    if (!fs.existsSync(configFilePath)) {
-      throw new Error(`Configuration file not found at: ${configFilePath}`);
-    }
+
     const fileContents = fs.readFileSync(configFilePath, 'utf8');
     const rawConfig = yaml.load(fileContents) as any; // Use 'any' for flexibility, validate below
 
@@ -90,23 +110,37 @@ export function loadConfig(): SiteConfig {
       throw new Error("Configuration file is empty or invalid.");
     }
 
+    // Type validation and default assignment
     const config: SiteConfig = {
-      // Site Info
-      site_name: typeof rawConfig.site_name === 'string' ? rawConfig.site_name : "DevDocs++",
-      site_description: typeof rawConfig.site_description === 'string' ? rawConfig.site_description : "A documentation site.",
-      site_author: typeof rawConfig.site_author === 'string' ? rawConfig.site_author : "",
-      site_url: typeof rawConfig.site_url === 'string' ? rawConfig.site_url : "",
-      // Repo Info
-      repo_name: typeof rawConfig.repo_name === 'string' ? rawConfig.repo_name : "",
-      repo_url: typeof rawConfig.repo_url === 'string' ? rawConfig.repo_url : "",
-      edit_uri: typeof rawConfig.edit_uri === 'string' ? rawConfig.edit_uri : "",
-      // Copyright
-      copyright: typeof rawConfig.copyright === 'string' ? rawConfig.copyright : `© ${new Date().getFullYear()} DevDocs++`,
+ site: {
+ name: typeof rawConfig.site?.name === 'string' ? rawConfig.site.name : "DevDocs++",
+ full_name: typeof rawConfig.site?.full_name === 'string' ? rawConfig.site.full_name : "Comprehensive Technology Documentation",
+ description: typeof rawConfig.site?.description === 'string' ? rawConfig.site.description : "A documentation site.",
+ author: typeof rawConfig.site?.author === 'string' ? rawConfig.site.author : "",
+ url: typeof rawConfig.site?.url === 'string' ? rawConfig.site.url : "",
+      },
+ repo: {
+ name: typeof rawConfig.repo?.name === 'string' ? rawConfig.repo.name : "",
+ url: typeof rawConfig.repo?.url === 'string' ? rawConfig.repo.url : "",
+ edit_uri: typeof rawConfig.repo?.edit_uri === 'string' ? rawConfig.repo.edit_uri : "",
+      },
+ copyright: {
+ copyright: typeof rawConfig.copyright?.copyright === 'string' ? rawConfig.copyright.copyright : `© ${new Date().getFullYear()} DevDocs++`,
+      },
       // Assets (Paths) - ensure they are strings or empty strings
-      logo_path: typeof rawConfig.logo_path === 'string' ? rawConfig.logo_path : "",
-      favicon_path: typeof rawConfig.favicon_path === 'string' ? rawConfig.favicon_path : "",
+ assets: {
+ logo: typeof rawConfig.assets?.logo === 'string' ? rawConfig.assets.logo : "",
+ favicon: typeof rawConfig.assets?.favicon === 'string' ? rawConfig.assets.favicon : "",
+      },
       // Navigation - ensure it's an array
       nav: Array.isArray(rawConfig.nav) ? rawConfig.nav : [],
+      // Social links - ensure it's an array of objects with string icon and link
+ social: Array.isArray(rawConfig.social)
+ ? rawConfig.social.map((item: any) => ({
+ icon: typeof item.icon === 'string' ? item.icon : '',
+ link: typeof item.link === 'string' ? item.link : '',
+          } as { icon: string; link: string }))
+        : [], // Default to empty array
       // Theme - ensure structure and defaults
       theme: {
         default: typeof rawConfig.theme?.default === 'string' ? rawConfig.theme.default : "system",
@@ -114,7 +148,13 @@ export function loadConfig(): SiteConfig {
       },
       // Search - ensure structure and default
       search: {
-        enabled: typeof rawConfig.search?.enabled === 'boolean' ? rawConfig.search.enabled : true,
+ enabled: typeof rawConfig.search?.enabled === 'boolean' ? rawConfig.search.enabled : true,
+      },
+       // Error pages
+ error_pages: {
+ '404_page': typeof rawConfig.error_pages?.['404_page'] === 'string'
+ ? rawConfig.error_pages['404_page']
+ : '', // Default to empty string
       },
     };
     
